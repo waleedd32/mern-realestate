@@ -34,6 +34,18 @@ function Header() {
             </svg>
           </button>
         </form>
+        <ul className="flex gap-4">
+          <Link to="/">
+            <li className="hidden sm:inline text-sm md:text-base hover:text-blue-300 hover:underline">
+              Home
+            </li>
+          </Link>
+          <Link to="/about">
+            <li className="hidden sm:inline text-sm md:text-base hover:text-blue-300 hover:underline">
+              About
+            </li>
+          </Link>
+        </ul>
       </div>
     </header>
   );
