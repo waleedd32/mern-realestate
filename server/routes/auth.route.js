@@ -13,7 +13,8 @@ router.post("/signup", async (req, res, next) => {
 
     res.status(201).json("User created successfully!");
   } catch (error) {
-    res.status(500).json(error.message);
+    next(error);
+    // res.status(500).json(error.message);
   }
 });
 
