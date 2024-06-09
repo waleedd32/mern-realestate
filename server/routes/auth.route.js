@@ -2,6 +2,7 @@ import express from "express";
 import User from "../models/user.model.js";
 import bcryptjs from "bcryptjs";
 import { errorHandler } from "../utils/error.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -22,6 +23,37 @@ router.post("/signup", async (req, res, next) => {
     // next(errorHandler(550, "got error from function"));
 
     // Third method: we can Handle the error response directly within the route
+    // res.status(500).json(error.message);
+  }
+});
+
+router.post("/signin", async (req, res, next) => {
+  const { email, password } = req.body;
+  console.log("Request Body:", req.body);
+
+  try {
+    const validUser = await User.findOne({ email: email });
+    if (!validUser) return next(errorHandler(404, "User not found!"));
+    const validPassword = bcryptjs.compareSync(password, validUser.password);
+    if (!validPassword) return next(errorHandler(401, "Wrong credentials!"));
+
+    console.log("JWT Secret:", process.env.JWT_SECERET);
+
+    const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECERET);
+    const { password: pass, ...rest } = validUser._doc;
+
+    res
+      .cookie("access_token_voiollamikatahansa", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        path: "/", // Ensuring cookie to be available on all pages
+        // maxAge: 24 * 60 * 60 * 1000, // 1 day
+      })
+      .status(200)
+      .json(rest);
+  } catch (error) {
+    next(error);
     // res.status(500).json(error.message);
   }
 });
