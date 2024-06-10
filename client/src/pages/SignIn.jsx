@@ -34,8 +34,8 @@ function SignIn() {
       navigate("/");
     } catch (error) {
       setLoading(false);
-      setError(error.message);
-      console.log("Sign In Error from server:", error.response.data.message);
+      setError(error.response.data.message);
+      console.log("Sign In Error from server:", error.message);
     }
   };
 
