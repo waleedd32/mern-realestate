@@ -34,7 +34,8 @@ function SignUp() {
       navigate("/sign-in");
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      setError(error.response.data.message);
+      console.log("Sign Up Error from server:", error.message);
     }
   };
 
