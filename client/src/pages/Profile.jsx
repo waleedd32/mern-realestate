@@ -1,11 +1,24 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 function Profile() {
-  const { currentUser, loading, error } = useSelector((state) => state.user);
-
   const fileRef = useRef(null);
+  const { currentUser, loading, error } = useSelector((state) => state.user);
+  const [file, setFile] = useState(undefined);
+  const [filePerc, setFilePerc] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  // firebase storage
+  // allow read;
+  // allow write: if
+  // request.resource.size < 2 * 1024 * 1024 &&
+  // request.resource.contentType.matches('image/.*')
+
+  console.log("File of Profile", file);
+  console.log("filePerc of Profile", filePerc);
+  console.log("formData of Profile ", formData);
 
   return (
     <div className="p-3 max-w-lg mx-auto">
