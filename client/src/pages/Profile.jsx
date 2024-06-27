@@ -1,5 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
+import { getStorage } from "firebase/storage";
+import { app } from "../firebase";
+
 import { Link } from "react-router-dom";
 
 function Profile() {
@@ -19,6 +22,16 @@ function Profile() {
   console.log("File of Profile", file);
   console.log("filePerc of Profile", filePerc);
   console.log("formData of Profile ", formData);
+
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+  const handleFileUpload = (file) => {
+    const storage = getStorage(app);
+  };
 
   return (
     <div className="p-3 max-w-lg mx-auto">
