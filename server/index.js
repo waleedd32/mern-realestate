@@ -1,6 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import userRouter from "./routes/user.route.js";
+
 import authRouter from "./routes/auth.route.js";
 import cookieParser from "cookie-parser";
 
@@ -26,6 +28,8 @@ app.get("/", (req, res) => {
   res.send("Welcome to the Real Estate API");
 });
 
+app.use("/server/user", userRouter);
+
 app.use("/server/auth", authRouter);
 
 app.use((err, req, res, next) => {
@@ -39,3 +43,7 @@ app.use((err, req, res, next) => {
 });
 
 app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
+
+// app.get("/test", (req, res) => {
+//   res.json({ message: "Real Estate API" });
+// });

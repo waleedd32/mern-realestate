@@ -3,7 +3,7 @@ import { errorHandler } from "./error.js";
 
 export const verifyToken = (req, res, next) => {
   const token = req.cookies.access_token_voiollamikatahansa;
-  console.log("Token from cookies:", token); // Debugging line
+  console.log("Token from cookies:", token);
 
   if (!token) return next(errorHandler(401, "Unauthorized"));
 
