@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getDownloadURL,
   getStorage,
@@ -7,7 +7,11 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
-
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
 
 function Profile() {
@@ -17,6 +21,8 @@ function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+
+  const dispatch = useDispatch();
 
   // firebase storage
   // allow read;
@@ -66,7 +72,9 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-    } catch (error) {}
+    } catch (error) {
+      dispatch(updateUserFailure(error.message));
+    }
   };
 
   return (
