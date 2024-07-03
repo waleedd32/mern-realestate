@@ -76,7 +76,7 @@ function Profile() {
     try {
       dispatch(updateUserStart());
       const res = await axios.post(
-        `/server/user/update/${currentUser._id}`,
+        `/server/user/update/${currentUser._id}5`,
         formData
       );
 
@@ -159,6 +159,7 @@ function Profile() {
         <span className="text-red-700 cursor-pointer">Delete account</span>
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
+      <p className="text-red-700 mt-5">{error ? error : ""} </p>
     </div>
   );
 }
