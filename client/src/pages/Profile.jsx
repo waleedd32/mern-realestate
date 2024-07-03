@@ -13,6 +13,7 @@ import {
   updateUserFailure,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Profile() {
   const fileRef = useRef(null);
@@ -21,6 +22,7 @@ function Profile() {
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [updateSuccess, setUpdateSuccess] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -72,6 +74,21 @@ function Profile() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(updateUserStart());
+      const res = await axios.post(
+        `/server/user/update/${currentUser._id}`,
+        formData
+      );
+
+      const data = res.data;
+      console.log("submit data of profile:", data);
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+      setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.message));
     }
