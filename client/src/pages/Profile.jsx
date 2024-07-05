@@ -76,7 +76,7 @@ function Profile() {
     try {
       dispatch(updateUserStart());
       const res = await axios.post(
-        `/server/user/update/${currentUser._id}5`,
+        `/server/user/update/${currentUser._id}`,
         formData
       );
 
@@ -90,7 +90,8 @@ function Profile() {
       dispatch(updateUserSuccess(data));
       setUpdateSuccess(true);
     } catch (error) {
-      dispatch(updateUserFailure(error.message));
+      dispatch(updateUserFailure(error.response.data.message));
+      // dispatch(updateUserFailure(error.message));
     }
   };
 
