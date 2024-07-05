@@ -91,6 +91,7 @@ function Profile() {
       setUpdateSuccess(true);
     } catch (error) {
       dispatch(updateUserFailure(error.response.data.message));
+      console.log("Update profile Error from server:", error.message);
       // dispatch(updateUserFailure(error.message));
     }
   };
@@ -161,6 +162,9 @@ function Profile() {
         <span className="text-red-700 cursor-pointer">Sign out</span>
       </div>
       <p className="text-red-700 mt-5">{error ? error : ""} </p>
+      <p className="text-green-700 mt-5">
+        {updateSuccess ? "User is updated successfully!" : ""}
+      </p>
     </div>
   );
 }
