@@ -112,7 +112,12 @@ function Profile() {
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message));
+      dispatch(deleteUserFailure(error.response.data.message));
+      console.log(
+        "Delete user Error from server (profile component):",
+        error.message
+      );
+      // dispatch(deleteUserFailure(error.message));
     }
   };
 
