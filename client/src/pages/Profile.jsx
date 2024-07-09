@@ -12,6 +12,8 @@ import {
   updateUserSuccess,
   updateUserFailure,
   deleteUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -99,6 +101,16 @@ function Profile() {
 
   const handleDeleteUser = async () => {
     try {
+      dispatch(deleteUserStart());
+      const res = await axios.delete(`/server/user/delete/${currentUser._id}`);
+
+      const data = res.data;
+      console.log("deleteduser ", data);
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
