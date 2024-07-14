@@ -14,6 +14,7 @@ import {
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  signOutUserStart,
 } from "../redux/user/userSlice";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -123,6 +124,15 @@ function Profile() {
 
   const handleSignOut = async () => {
     try {
+      dispatch(signOutUserStart());
+      const res = await axios.get("/server/auth/signout");
+
+      const data = res.data;
+      if (data.success === false) {
+        dispatch(deleteUserFailure(data.message));
+        return;
+      }
+      dispatch(deleteUserSuccess(data));
     } catch (error) {
       dispatch(deleteUserFailure(error.message));
     }
