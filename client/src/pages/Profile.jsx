@@ -134,7 +134,13 @@ function Profile() {
       }
       dispatch(deleteUserSuccess(data));
     } catch (error) {
-      dispatch(deleteUserFailure(error.message));
+      dispatch(
+        deleteUserFailure(error.message || "An error occurred during sign out")
+      );
+      console.log(
+        "An error occurred during sign out (profile component):",
+        error.message
+      );
     }
   };
 
