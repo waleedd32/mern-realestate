@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 
 function CreateListing() {
+  const [files, setFiles] = useState([]);
+  console.log("Files of Createlisting", files);
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -77,6 +80,7 @@ function CreateListing() {
           </p>
           <div className="flex gap-4">
             <input
+              onChange={(e) => setFiles(e.target.files)}
               className="p-3 border border-gray-300 rounded w-full"
               type="file"
               id="images"
