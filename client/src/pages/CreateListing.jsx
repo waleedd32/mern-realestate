@@ -4,6 +4,16 @@ function CreateListing() {
   const [files, setFiles] = useState([]);
   console.log("Files of Createlisting", files);
 
+  const handleImageSubmit = async (e) => {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      setUploading(true);
+      setImageUploadError(false);
+    } else {
+      setImageUploadError("You can only upload 6 images per listing");
+      setUploading(false);
+    }
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
@@ -89,6 +99,7 @@ function CreateListing() {
             />
             <button
               type="button"
+              onClick={handleImageSubmit}
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
             >
               Upload
