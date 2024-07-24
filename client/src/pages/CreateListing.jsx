@@ -8,12 +8,48 @@ import {
 
 function CreateListing() {
   const [files, setFiles] = useState([]);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+    name: "",
+    description: "",
+    address: "",
+    type: "rent",
+    bedrooms: 1,
+    bathrooms: 1,
+    regularPrice: 50,
+    discountPrice: 0,
+    offer: false,
+    parking: false,
+    furnished: false,
+  });
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   console.log("Files of Createlisting", files);
 
   const handleImageSubmit = async (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
       setImageUploadError(false);
+      const promises = [];
+
+      try {
+        for (let i = 0; i < files.length; i++) {
+          promises.push(storeImage(files[i]));
+        }
+        const urls = await Promise.all(promises);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          imageUrls: prevFormData.imageUrls.concat(urls),
+        }));
+        setImageUploadError(false);
+        setUploading(false);
+      } catch (err) {
+        setImageUploadError("Image upload failed (2 mb max per image)");
+        setUploading(false);
+      }
     } else {
       setImageUploadError("You can only upload 6 images per listing");
       setUploading(false);
