@@ -5,6 +5,7 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { app } from "../firebase";
 
 function CreateListing() {
   const [files, setFiles] = useState([]);
@@ -176,6 +177,9 @@ function CreateListing() {
               Upload
             </button>
           </div>
+          <p className="text-red-700 text-sm">
+            {imageUploadError && imageUploadError}
+          </p>
           <button className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80">
             Create listing
           </button>
