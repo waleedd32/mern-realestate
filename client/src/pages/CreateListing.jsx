@@ -87,6 +87,19 @@ function CreateListing() {
     }
   };
 
+  const handleRemoveImage = (index) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      imageUrls: prevFormData.imageUrls.filter((_, i) => i !== index),
+    }));
+
+    // can be done also like following
+    // setFormData({
+    //     ...formData,
+    //     imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    //   });
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
