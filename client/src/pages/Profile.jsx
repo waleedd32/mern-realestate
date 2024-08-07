@@ -27,6 +27,8 @@ function Profile() {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const [updateSuccess, setUpdateSuccess] = useState(false);
+  const [showListingsError, setShowListingsError] = useState(false);
+  const [userListings, setUserListings] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -144,6 +146,23 @@ function Profile() {
     }
   };
 
+  const handleShowListings = async () => {
+    try {
+      setShowListingsError(false);
+      const res = await axios.get(`/server/user/listings/${currentUser._id}`);
+
+      const data = res.data;
+      if (data.success === false) {
+        setShowListingsError(true);
+        return;
+      }
+
+      setUserListings(data);
+    } catch (error) {
+      setShowListingsError(true);
+    }
+  };
+
   return (
     <div className="p-3 max-w-lg mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
@@ -226,6 +245,9 @@ function Profile() {
       <p className="text-green-700 mt-5">
         {updateSuccess ? "User is updated successfully!" : ""}
       </p>
+      <button onClick={handleShowListings} className="text-green-700 w-full">
+        Show Listings
+      </button>
     </div>
   );
 }
