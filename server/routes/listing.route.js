@@ -45,6 +45,12 @@ router.post("/update/:id", verifyToken, async (req, res, next) => {
   }
 
   try {
+    const updatedListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    res.status(200).json(updatedListing);
   } catch (error) {
     next(error);
   }
