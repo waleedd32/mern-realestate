@@ -33,4 +33,21 @@ router.delete("/delete/:id", verifyToken, async (req, res, next) => {
   }
 });
 
+router.post("/update/:id", verifyToken, async (req, res, next) => {
+  const listing = await Listing.findById(req.params.id);
+
+  if (!listing) {
+    return next(errorHandler(404, "Listing not found!"));
+  }
+
+  if (req.user.id !== listing.userRef) {
+    return next(errorHandler(401, "You can only update your own listings!"));
+  }
+
+  try {
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
