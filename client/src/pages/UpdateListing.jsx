@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 
 import { useSelector } from "react-redux";
 import axios from "axios";
@@ -8,7 +8,7 @@ function UpdateListing() {
   axios.defaults.withCredentials = true;
 
   const { currentUser } = useSelector((state) => state.user);
-  
+
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -23,11 +23,9 @@ function UpdateListing() {
     parking: false,
     furnished: false,
   });
-  
+
   console.log("formData", formData);
   console.log("currentUser", currentUser);
-
- 
 
   const handleChange = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
@@ -60,14 +58,12 @@ function UpdateListing() {
     }
   };
 
- 
-
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
         Update a Listing
       </h1>
-      <form  className="flex flex-col sm:flex-row gap-4">
+      <form className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
@@ -195,10 +191,29 @@ function UpdateListing() {
                 )}
               </div>
             </div>
-        
+            {formData.offer && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  id="discountPrice"
+                  min="0"
+                  max="10000000"
+                  required
+                  className="p-3 border border-gray-300 rounded-lg"
+                  onChange={handleChange}
+                  value={formData.discountPrice}
+                />
+                <div className="flex flex-col items-center">
+                  <p>Discounted price</p>
+
+                  {formData.type === "rent" && (
+                    <span className="text-xs">($ / month)</span>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      
       </form>
     </main>
   );
