@@ -8,6 +8,7 @@ function UpdateListing() {
   axios.defaults.withCredentials = true;
 
   const { currentUser } = useSelector((state) => state.user);
+  const [files, setFiles] = useState([]);
 
   const [formData, setFormData] = useState({
     imageUrls: [],
@@ -212,6 +213,30 @@ function UpdateListing() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+        <div className="flex flex-col flex-1 gap-4">
+          <p className="font-semibold">
+            Images:
+            <span className="font-normal text-gray-600 ml-2">
+              The first image will be the cover (max 6)
+            </span>
+          </p>
+          <div className="flex gap-4">
+            <input
+              onChange={(e) => setFiles(e.target.files)}
+              className="p-3 border border-gray-300 rounded w-full"
+              type="file"
+              id="images"
+              accept="image/*"
+              multiple
+            />
+            <button
+              type="button"
+              className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
+            >
+              Uploading{" "}
+            </button>
           </div>
         </div>
       </form>
