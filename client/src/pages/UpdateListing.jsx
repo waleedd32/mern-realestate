@@ -28,6 +28,19 @@ function UpdateListing() {
   console.log("formData", formData);
   console.log("currentUser", currentUser);
 
+  const handleRemoveImage = (index) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      imageUrls: prevFormData.imageUrls.filter((_, i) => i !== index),
+    }));
+
+    // can be done also like following
+    // setFormData({
+    //     ...formData,
+    //     imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    //   });
+  };
+
   const handleChange = (e) => {
     if (e.target.id === "sale" || e.target.id === "rent") {
       setFormData({
@@ -254,6 +267,7 @@ function UpdateListing() {
                 />
                 <button
                   type="button"
+                  onClick={() => handleRemoveImage(index)}
                   className="p-3 text-red-700 rounded-lg uppercase hover:opacity-75"
                 >
                   Delete
