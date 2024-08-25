@@ -28,6 +28,23 @@ function UpdateListing() {
   console.log("formData", formData);
   console.log("currentUser", currentUser);
 
+  const handleImageSubmit = async (e) => {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      setUploading(true);
+      setImageUploadError(false);
+
+      try {
+        setUploading(false);
+      } catch (err) {
+        setImageUploadError("Image upload failed (2 mb max per image)");
+        setUploading(false);
+      }
+    } else {
+      setImageUploadError("You can only upload 6 images per listing");
+      setUploading(false);
+    }
+  };
+
   const handleRemoveImage = (index) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
@@ -246,9 +263,11 @@ function UpdateListing() {
             />
             <button
               type="button"
+              disabled={uploading}
+              onClick={handleImageSubmit}
               className="p-3 text-green-700 border border-green-700 rounded uppercase hover:shadow-lg disabled:opacity-80"
             >
-              Uploading{" "}
+              {uploading ? "Uploading..." : "Upload"}
             </button>
           </div>
           <p className="text-red-700 text-sm">
