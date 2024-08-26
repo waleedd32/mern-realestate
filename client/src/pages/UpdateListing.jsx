@@ -32,8 +32,18 @@ function UpdateListing() {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
       setUploading(true);
       setImageUploadError(false);
+      const promises = [];
 
       try {
+        for (let i = 0; i < files.length; i++) {
+          promises.push(storeImage(files[i]));
+        }
+        const urls = await Promise.all(promises);
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          imageUrls: prevFormData.imageUrls.concat(urls),
+        }));
+        setImageUploadError(false);
         setUploading(false);
       } catch (err) {
         setImageUploadError("Image upload failed (2 mb max per image)");
@@ -42,6 +52,13 @@ function UpdateListing() {
     } else {
       setImageUploadError("You can only upload 6 images per listing");
       setUploading(false);
+    }
+  };
+
+  const storeImage = async (file) => {
+    try {
+    } catch (err) {
+      throw new Error("Image upload failed");
     }
   };
 
