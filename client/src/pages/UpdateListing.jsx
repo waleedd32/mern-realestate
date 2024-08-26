@@ -1,5 +1,10 @@
 import { useState } from "react";
-
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { useSelector } from "react-redux";
 import axios from "axios";
 
@@ -24,6 +29,8 @@ function UpdateListing() {
     parking: false,
     furnished: false,
   });
+  const [imageUploadError, setImageUploadError] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   console.log("formData", formData);
   console.log("currentUser", currentUser);
@@ -57,6 +64,28 @@ function UpdateListing() {
 
   const storeImage = async (file) => {
     try {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            resolve(downloadURL);
+          }
+        );
+      });
     } catch (err) {
       throw new Error("Image upload failed");
     }
