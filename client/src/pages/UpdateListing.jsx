@@ -31,6 +31,8 @@ function UpdateListing() {
   });
   const [imageUploadError, setImageUploadError] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   console.log("formData", formData);
   console.log("currentUser", currentUser);
@@ -339,6 +341,13 @@ function UpdateListing() {
                 </button>
               </div>
             ))}
+          <button
+            disabled={loading || uploading}
+            className="p-3 bg-slate-700 text-white rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+          >
+            {loading ? "Updating..." : "Update listing"}
+          </button>
+          {error && <p className="text-red-700 text-sm">{error}</p>}
         </div>
       </form>
     </main>
