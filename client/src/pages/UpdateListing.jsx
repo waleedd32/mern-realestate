@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   getDownloadURL,
   getStorage,
@@ -36,6 +36,22 @@ function UpdateListing() {
 
   console.log("formData", formData);
   console.log("currentUser", currentUser);
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      const listingId = params.listingId;
+      console.log("updateListing listingId: ", listingId);
+      const res = await axios.get(`/server/listing/get/${listingId}`);
+
+      const data = res.data;
+      if (data.success === false) {
+        console.log("updateListing data unsuccessful: ", data.message);
+        return;
+      }
+      setFormData(data);
+    };
+    fetchListing();
+  }, []);
 
   const handleImageSubmit = async (e) => {
     if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
