@@ -5,7 +5,9 @@ import {
   ref,
   uploadBytesResumable,
 } from "firebase/storage";
+import { app } from "../firebase";
 import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 function UpdateListing() {
@@ -13,8 +15,9 @@ function UpdateListing() {
   axios.defaults.withCredentials = true;
 
   const { currentUser } = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const params = useParams();
   const [files, setFiles] = useState([]);
-
   const [formData, setFormData] = useState({
     imageUrls: [],
     name: "",
@@ -33,8 +36,8 @@ function UpdateListing() {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
-
   console.log("formData", formData);
+  console.log("Files of Createlisting", files);
   console.log("currentUser", currentUser);
 
   useEffect(() => {
@@ -153,12 +156,42 @@ function UpdateListing() {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (formData.imageUrls.length < 1)
+        return setError("You must upload at least one image");
+      if (+formData.regularPrice < +formData.discountPrice)
+        return setError("Discount price must be lower than regular price");
+      setLoading(true);
+      setError(false);
+
+      const response = await axios.post(
+        `/server/listing/update/${params.listingId}`,
+        {
+          ...formData,
+          userRef: currentUser._id,
+        }
+      );
+      const data = response.data;
+
+      setLoading(false);
+      if (data.success === false) {
+        setError(data.message);
+      }
+      navigate(`/listing/${data._id}`);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="p-3 max-w-4xl mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">
         Update a Listing
       </h1>
-      <form className="flex flex-col sm:flex-row gap-4">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4">
         <div className="flex flex-col gap-4 flex-1">
           <input
             type="text"
