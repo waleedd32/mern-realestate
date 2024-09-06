@@ -41,7 +41,7 @@ const Listing = () => {
       {error && (
         <p className="text-center my-7 text-2xl">Something went wrong!</p>
       )}
-      {listing && listing.name}
+      {listing && !loading && !error && <h1>{listing.name}</h1>}
     </main>
   );
 };
