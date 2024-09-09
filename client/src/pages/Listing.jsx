@@ -75,6 +75,21 @@ const Listing = () => {
               }}
             />
           </div>
+          {copied && (
+            <p className="fixed top-[23%] right-[5%] z-10 rounded-md bg-slate-100 p-2">
+              Link copied!
+            </p>
+          )}
+
+          <div>
+            <p className="text-2xl font-semibold">
+              {listing.name} - ${" "}
+              {listing.offer
+                ? listing.discountPrice.toLocaleString("en-US")
+                : listing.regularPrice.toLocaleString("en-US")}
+              {listing.type === "rent" && " / month"}
+            </p>
+          </div>
         </div>
       )}
     </main>
