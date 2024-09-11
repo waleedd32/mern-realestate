@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import SwiperCore from "swiper";
 import { Navigation } from "swiper/modules";
 import "swiper/css/bundle";
-import { FaShare } from "react-icons/fa";
+import { FaMapMarkerAlt, FaShare } from "react-icons/fa";
 
 const Listing = () => {
   SwiperCore.use([Navigation]);
@@ -82,7 +82,7 @@ const Listing = () => {
             </p>
           )}
 
-          <div>
+          <div className="flex flex-col max-w-4xl mx-auto p-3 my-7 gap-4">
             <p className="text-2xl font-semibold">
               {listing.name} - ${" "}
               {listing.offer
@@ -98,7 +98,12 @@ const Listing = () => {
               <p className="bg-red-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
                 {listing.type === "rent" ? "For Rent" : "For Sale"}
               </p>
-            </div>{" "}
+              {listing.offer && (
+                <p className="bg-green-900 w-full max-w-[200px] text-white text-center p-1 rounded-md">
+                  ${+listing.regularPrice - +listing.discountPrice} OFF
+                </p>
+              )}
+            </div>
           </div>
         </div>
       )}
