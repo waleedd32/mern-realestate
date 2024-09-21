@@ -68,4 +68,16 @@ router.get("/get/:id", async (req, res, next) => {
   }
 });
 
+router.get("/get", async (req, res, next) => {
+  try {
+    const limit = parseInt(req.query.limit) || 9;
+    const startIndex = parseInt(req.query.startIndex) || 0;
+    let offer = req.query.offer;
+
+    return res.json({ message: "Get listings" });
+  } catch (error) {
+    next(error);
+  }
+});
+
 export default router;
