@@ -95,6 +95,16 @@ router.get("/get", async (req, res, next) => {
     if (type === undefined || type === "all") {
       type = { $in: ["sale", "rent"] };
     }
+
+    const searchTerm = req.query.searchTerm || "";
+
+    const listings = await Listing.find({
+      name: { $regex: searchTerm, $options: "i" },
+      offer,
+      furnished,
+      parking,
+      type,
+    });
     return res.json({ message: "Get listings" });
   } catch (error) {
     next(error);
