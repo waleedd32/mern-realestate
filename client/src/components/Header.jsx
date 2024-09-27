@@ -1,9 +1,19 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 function Header() {
   const { currentUser } = useSelector((state) => state.user);
+  const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set("searchTerm", searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
 
   return (
     <header className="bg-blue-800 text-white shadow-lg">
@@ -14,11 +24,16 @@ function Header() {
             <span className="text-slate-700">Estate</span>
           </h1>
         </Link>
-        <form className="bg-white bg-opacity-20 backdrop-blur-md p-2 rounded-full flex items-center">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white bg-opacity-20 backdrop-blur-md p-2 rounded-full flex items-center"
+        >
           <input
             type="text"
             placeholder="Search..."
             className="bg-transparent focus:outline-none text-white placeholder-white p-2 w-24 sm:w-64 md:w-96 "
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
           />
           <button className="text-white ml-2">
             <svg
