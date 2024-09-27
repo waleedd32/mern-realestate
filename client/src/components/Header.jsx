@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -14,6 +14,17 @@ function Header() {
     const searchQuery = urlParams.toString();
     navigate(`/search?${searchQuery}`);
   };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+  const urlParams = new URLSearchParams(location.search);
+
+  console.log("urlParams Header", urlParams.get("searchTerm"));
 
   return (
     <header className="bg-blue-800 text-white shadow-lg">
