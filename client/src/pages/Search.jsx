@@ -1,6 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 
 const Search = () => {
+  const [sidebardata, setSidebardata] = useState({
+    searchTerm: "",
+    type: "all",
+    parking: false,
+    furnished: false,
+    offer: false,
+    sort: "created_at",
+    order: "desc",
+  });
+
+  const handleChange = (e) => {};
+
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-7  border-b-2 md:border-r-2 md:min-h-screen">
@@ -14,13 +26,21 @@ const Search = () => {
               id="searchTerm"
               placeholder="Search..."
               className="border rounded-lg p-3 w-full"
+              value={sidebardata.searchTerm}
+              onChange={handleChange}
             />
           </div>
 
           <div className="flex gap-2 flex-wrap items-center">
             <label className="font-semibold">Type:</label>
             <div className="flex gap-2">
-              <input type="checkbox" id="all" className="w-5" />
+              <input
+                type="checkbox"
+                id="all"
+                className="w-5"
+                onChange={handleChange}
+                checked={sidebardata.type === "all"}
+              />
               <span>Rent & Sale</span>
             </div>
             <div className="flex gap-2">
