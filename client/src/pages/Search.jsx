@@ -11,7 +11,19 @@ const Search = () => {
     order: "desc",
   });
 
-  const handleChange = (e) => {};
+  const handleChange = (e) => {
+    if (
+      e.target.id === "all" ||
+      e.target.id === "rent" ||
+      e.target.id === "sale"
+    ) {
+      setSidebardata({ ...sidebardata, type: e.target.id });
+    }
+
+    if (e.target.id === "searchTerm") {
+      setSidebardata({ ...sidebardata, searchTerm: e.target.value });
+    }
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
