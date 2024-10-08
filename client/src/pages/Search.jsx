@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Search = () => {
@@ -12,6 +12,22 @@ const Search = () => {
     sort: "created_at",
     order: "desc",
   });
+
+  const [loading, setLoading] = useState(false);
+  const [showMore, setShowMore] = useState(false);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+
+    if (searchTermFromUrl) {
+      setSidebardata({
+        searchTerm: searchTermFromUrl || "",
+      });
+    }
+  }, [location.search]);
+
+  console.log("searchTermFromUrl:", sidebardata);
 
   const handleChange = (e) => {
     if (
