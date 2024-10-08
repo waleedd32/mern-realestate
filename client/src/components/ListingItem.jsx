@@ -1,7 +1,7 @@
 import React from "react";
 
 const ListingItem = () => {
-  return <div>ListingItem</div>;
+  return <div>listingitem</div>;
 };
 
 export default ListingItem;

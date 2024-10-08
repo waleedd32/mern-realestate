@@ -233,6 +233,11 @@ const Search = () => {
               Loading...
             </p>
           )}
+          {!loading &&
+            listings &&
+            listings.map((listing) => (
+              <ListingItem key={listing._id} listing={listing} />
+            ))}
         </div>
       </div>
     </div>
