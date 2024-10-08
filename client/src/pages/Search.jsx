@@ -14,7 +14,9 @@ const Search = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
   const [showMore, setShowMore] = useState(false);
+  console.log("listing:", listings);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
@@ -45,9 +47,24 @@ const Search = () => {
         order: orderFromUrl || "desc",
       });
     }
-  }, [location.search]);
 
-  console.log("searchTermFromUrl:", sidebardata);
+    const fetchListings = async () => {
+      setLoading(true);
+      setShowMore(false);
+      const searchQuery = urlParams.toString();
+      const res = await axios.get(`/server/listing/get?${searchQuery}`);
+      const data = res.data;
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
+      setListings(data);
+      setLoading(false);
+    };
+
+    fetchListings();
+  }, [location.search]);
 
   const handleChange = (e) => {
     if (
