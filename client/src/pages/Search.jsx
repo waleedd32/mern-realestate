@@ -116,6 +116,8 @@ const Search = () => {
     navigate(`/search?${searchQuery}`);
   };
 
+  const onShowMoreClick = async () => {};
+
   return (
     <div className="flex flex-col md:flex-row">
       <div className="p-7  border-b-2 md:border-r-2 md:min-h-screen">
@@ -233,11 +235,21 @@ const Search = () => {
               Loading...
             </p>
           )}
+
           {!loading &&
             listings &&
             listings.map((listing) => (
               <ListingItem key={listing._id} listing={listing} />
             ))}
+
+          {showMore && (
+            <button
+              onClick={onShowMoreClick}
+              className="text-green-700 hover:underline p-7 text-center w-full"
+            >
+              Show more
+            </button>
+          )}
         </div>
       </div>
     </div>
