@@ -116,7 +116,20 @@ const Search = () => {
     navigate(`/search?${searchQuery}`);
   };
 
-  const onShowMoreClick = async () => {};
+  const onShowMoreClick = async () => {
+    const numberOfListings = listings.length;
+    const startIndex = numberOfListings;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+    const res = await axios.get(`/server/listing/get?${searchQuery}`);
+
+    const data = res.data;
+    if (data.length < 9) {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
+  };
 
   return (
     <div className="flex flex-col md:flex-row">
