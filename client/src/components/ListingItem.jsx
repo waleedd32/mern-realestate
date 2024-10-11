@@ -36,6 +36,13 @@ const ListingItem = ({ listing }) => {
             : listing.regularPrice.toLocaleString("en-US")}
           {listing.type === "rent" && " / month"}
         </p>
+        <div className="text-slate-700 flex gap-4">
+          <div className="font-bold text-xs">
+            {listing.bedrooms > 1
+              ? `${listing.bedrooms} beds `
+              : `${listing.bedrooms} bed `}
+          </div>
+        </div>
       </div>
     </div>
   );
