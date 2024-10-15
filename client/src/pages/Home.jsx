@@ -20,6 +20,18 @@ function Home() {
         // });
 
         setOfferListings(response.data);
+        fetchRentListings();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchRentListings = async () => {
+      try {
+        const response = await axios.get(
+          "/server/listing/get?type=rent&limit=4"
+        );
+        setRentListings(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -29,6 +41,7 @@ function Home() {
   }, []);
 
   console.log("offerListings Home component", offerListings);
+  console.log("rentListings Home component", rentListings);
 
   return (
     <div>
