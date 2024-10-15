@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -9,6 +10,16 @@ function Home() {
   useEffect(() => {
     const fetchOfferListings = async () => {
       try {
+        const response = await axios.get(
+          "/server/listing/get?offer=true&limit=4"
+        );
+        // Alternative approach using `params`:
+        // const response= await axios.get("/server/listing/get", {
+        //   params: { offer: true, limit: 4 },
+        //   withCredentials: true,
+        // });
+
+        setOfferListings(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -16,6 +27,8 @@ function Home() {
 
     fetchOfferListings();
   }, []);
+
+  console.log("offerListings Home component", offerListings);
 
   return (
     <div>
