@@ -1,7 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function Home() {
+  const [offerListings, setOfferListings] = useState([]);
+  const [saleListings, setSaleListings] = useState([]);
+  const [rentListings, setRentListings] = useState([]);
+
+  useEffect(() => {
+    const fetchOfferListings = async () => {
+      try {
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchOfferListings();
+  }, []);
+
   return (
     <div>
       {/* top */}
