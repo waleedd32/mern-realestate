@@ -32,6 +32,18 @@ function Home() {
           "/server/listing/get?type=rent&limit=4"
         );
         setRentListings(response.data);
+        fetchSaleListings();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const fetchSaleListings = async () => {
+      try {
+        const response = await axios.get(
+          "/server/listing/get?type=sale&limit=4"
+        );
+        setSaleListings(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -42,6 +54,7 @@ function Home() {
 
   console.log("offerListings Home component", offerListings);
   console.log("rentListings Home component", rentListings);
+  console.log("saleListings Home component", saleListings);
 
   return (
     <div>
