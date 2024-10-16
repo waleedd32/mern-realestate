@@ -1,11 +1,17 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+import SwiperCore from "swiper";
+import "swiper/css/bundle";
 
 function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+
+  SwiperCore.use([Navigation]);
 
   useEffect(() => {
     const fetchOfferListings = async () => {
@@ -81,7 +87,20 @@ function Home() {
       </div>
 
       {/* swiper */}
-
+      <Swiper navigation>
+        {offerListings.length > 0 &&
+          offerListings.map((listing) => (
+            <SwiperSlide key={listing._id}>
+              <div
+                style={{
+                  background: `url(${listing.imageUrls[0]})`,
+                }}
+                className="h-[500px]"
+                key={listing._id}
+              ></div>
+            </SwiperSlide>
+          ))}
+      </Swiper>
       {/* listing results for offer, sale and rent */}
     </div>
   );
