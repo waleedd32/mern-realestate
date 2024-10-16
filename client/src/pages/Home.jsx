@@ -104,6 +104,16 @@ function Home() {
           ))}
       </Swiper>
       {/* listing results for offer, sale and rent */}
+      <div>
+        {offerListings && offerListings.length > 0 && (
+          <div className="">
+            <div className="my-3">
+              <h2>Recent offers</h2>
+              <Link to={"/search?offer=true"}>Show more offers</Link>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
