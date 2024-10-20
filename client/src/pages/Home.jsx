@@ -126,6 +126,15 @@ function Home() {
             </div>
           </div>
         )}
+        {rentListings && rentListings.length > 0 && (
+          <div className="">
+            <div className="my-3">
+              <h2 className="text-2xl font-semibold text-slate-600">
+                Recent places for rent
+              </h2>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
