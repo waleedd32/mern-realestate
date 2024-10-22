@@ -13,6 +13,19 @@ function About() {
         diligently to ensure a seamless and enjoyable experience throughout the
         entire process.
       </p>
+      <p className="mb-4 text-slate-700">
+        Our goal is to support you in reaching your real estate aspirations by
+        offering expert guidance, personalized care, and in-depth knowledge of
+        the local market. Whether you're purchasing, selling, or renting, we are
+        here to guide you at every stage.
+      </p>
+      <p className="mb-4 text-slate-700">
+        With years of expertise and insight in the real estate market, our
+        agents are dedicated to delivering exceptional service. We believe that
+        every property transaction should be a positive and fulfilling journey,
+        and we are committed to making that a reality for every one of our
+        clients.
+      </p>
     </div>
   );
 }
