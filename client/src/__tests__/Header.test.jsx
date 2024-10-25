@@ -1,9 +1,10 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Header from "../components/Header";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
 import { MemoryRouter, Route, Routes, useLocation } from "react-router-dom";
+import userEvent from "@testing-library/user-event";
 
 // Helper component to display current location for testing
 const LocationDisplay = () => {
@@ -81,5 +82,17 @@ describe("Header Component", () => {
 
     // Ensure Sign in link is not rendered
     expect(screen.queryByText(/Sign in/i)).not.toBeInTheDocument();
+  });
+
+  test("navigates to home when Home link is clicked", async () => {
+    renderWithProviders(<Header />, { route: "/some-route" });
+
+    const user = userEvent.setup();
+    const homeLink = screen.getByText(/Home/i);
+
+    await user.click(homeLink);
+
+    // Checking that the location has changed to "/"
+    expect(screen.getByTestId("location-display")).toHaveTextContent("/");
   });
 });
