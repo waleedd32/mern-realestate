@@ -52,11 +52,34 @@ describe("Header Component", () => {
     expect(screen.getByText(/Home/i)).toBeInTheDocument();
     expect(screen.getByText(/About/i)).toBeInTheDocument();
 
-    // Check for Sign in link
+    // Checking for Sign in link
     expect(screen.getByText(/Sign in/i)).toBeInTheDocument();
 
-    // Ensure profile image is not rendered
+    // making sure profile image is not rendered
     const profileImage = screen.queryByAltText("profile");
     expect(profileImage).not.toBeInTheDocument();
+  });
+
+  test("renders header with user avatar when user is logged in", () => {
+    store = mockStore({
+      user: {
+        currentUser: {
+          avatar: "https://example.com/avatar.jpg",
+        },
+      },
+    });
+
+    renderWithProviders(<Header />);
+
+    // Checking for profile image
+    const profileImage = screen.getByAltText("profile");
+    expect(profileImage).toBeInTheDocument();
+    expect(profileImage).toHaveAttribute(
+      "src",
+      "https://example.com/avatar.jpg"
+    );
+
+    // Ensure Sign in link is not rendered
+    expect(screen.queryByText(/Sign in/i)).not.toBeInTheDocument();
   });
 });
