@@ -95,4 +95,16 @@ describe("Header Component", () => {
     // Checking that the location has changed to "/"
     expect(screen.getByTestId("location-display")).toHaveTextContent("/");
   });
+
+  test("navigates to about when About link is clicked", async () => {
+    renderWithProviders(<Header />, { route: "/some-route" });
+
+    const user = userEvent.setup();
+    const aboutLink = screen.getByText(/About/i);
+
+    await user.click(aboutLink);
+
+    // Checking that the location has changed to "/about"
+    expect(screen.getByTestId("location-display")).toHaveTextContent("/about");
+  });
 });
