@@ -107,4 +107,26 @@ describe("Header Component", () => {
     // Checking that the location has changed to "/about"
     expect(screen.getByTestId("location-display")).toHaveTextContent("/about");
   });
+
+  test("navigates to profile when Profile link is clicked", async () => {
+    store = mockStore({
+      user: {
+        currentUser: {
+          avatar: "https://example.com/avatar.jpg",
+        },
+      },
+    });
+
+    renderWithProviders(<Header />, { route: "/some-route" });
+
+    const user = userEvent.setup();
+    const profileLink = screen.getByAltText("profile").closest("a");
+
+    await user.click(profileLink);
+
+    // Checking that the location has changed to "/profile"
+    expect(screen.getByTestId("location-display")).toHaveTextContent(
+      "/profile"
+    );
+  });
 });
