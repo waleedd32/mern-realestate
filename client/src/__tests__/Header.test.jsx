@@ -166,4 +166,35 @@ describe("Header Component", () => {
     const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
     expect(searchInput).toHaveValue("condo");
   });
+
+  test("updates search term when URL changes", () => {
+    // Create a wrapper component to handle route changes
+    const TestWrapper = ({ initialPath }) => {
+      return (
+        <Provider store={store}>
+          <MemoryRouter initialEntries={[initialPath]}>
+            <Header />
+            <Routes>
+              <Route path="*" element={<LocationDisplay />} />
+            </Routes>
+          </MemoryRouter>
+        </Provider>
+      );
+    };
+
+    // First, render the component with no search term in the URL
+    const { rerender } = render(<TestWrapper initialPath="/" />);
+
+    const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
+    expect(searchInput).toHaveValue("");
+
+    // Rerender with new search term
+    rerender(<TestWrapper initialPath="/search?searchTerm=villa" />);
+
+    // Wait for the component to update and then check if the search input reflects the new URL term
+    waitFor(() => {
+      const updatedSearchInput = screen.getByPlaceholderText(/Search\.\.\./i);
+      expect(updatedSearchInput).toHaveValue("villa");
+    });
+  });
 });
