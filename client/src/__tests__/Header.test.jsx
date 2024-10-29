@@ -136,4 +136,25 @@ describe("Header Component", () => {
     const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
     expect(searchInput).toHaveValue("house");
   });
+
+  test("submitting search form navigates with correct query parameter", async () => {
+    renderWithProviders(<Header />, { route: "/" });
+
+    const user = userEvent.setup();
+    const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
+    const searchButton = screen.getByRole("button");
+
+    // Entering search term
+    await user.clear(searchInput);
+    await user.type(searchInput, "apartment");
+    expect(searchInput).toHaveValue("apartment");
+
+    // Submitting form
+    await user.click(searchButton);
+
+    // Expect navigation to /search?searchTerm=apartment
+    expect(screen.getByTestId("location-display")).toHaveTextContent(
+      "/search?searchTerm=apartment"
+    );
+  });
 });
