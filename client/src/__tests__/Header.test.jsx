@@ -129,4 +129,11 @@ describe("Header Component", () => {
       "/profile"
     );
   });
+
+  test("search input updates based on URL search parameter", () => {
+    renderWithProviders(<Header />, { route: "/search?searchTerm=house" });
+
+    const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
+    expect(searchInput).toHaveValue("house");
+  });
 });
