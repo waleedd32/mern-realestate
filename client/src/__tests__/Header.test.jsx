@@ -157,4 +157,13 @@ describe("Header Component", () => {
       "/search?searchTerm=apartment"
     );
   });
+
+  test("initializes search input from URL and maintains other query params", () => {
+    renderWithProviders(<Header />, {
+      route: "/search?searchTerm=condo&page=2",
+    });
+
+    const searchInput = screen.getByPlaceholderText(/Search\.\.\./i);
+    expect(searchInput).toHaveValue("condo");
+  });
 });
