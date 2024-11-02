@@ -9,11 +9,6 @@ describe("About Component", () => {
     render(<About />);
   });
 
-  it("renders the main container with correct class names", () => {
-    const mainDiv = screen.getByRole("heading", { level: 1 }).parentElement;
-    expect(mainDiv).toHaveClass("py-20", "px-4", "max-w-6xl", "mx-auto");
-  });
-
   it("displays the correct heading text", () => {
     const heading = screen.getByRole("heading", { level: 1 });
     expect(heading).toHaveTextContent("About Walid Estate");
@@ -36,6 +31,21 @@ describe("About Component", () => {
     // Test third paragraph content
     expect(paragraphs[2]).toHaveTextContent(
       /With years of expertise and insight in the real estate market/i
+    );
+  });
+
+  it("applies correct CSS classes", () => {
+    // Check main container classes
+    const container = screen.getByRole("heading", { level: 1 }).parentElement;
+    expect(container).toHaveClass("py-20", "px-4", "max-w-6xl", "mx-auto");
+
+    // Check heading classes
+    const heading = screen.getByRole("heading", { level: 1 });
+    expect(heading).toHaveClass(
+      "text-3xl",
+      "font-bold",
+      "mb-4",
+      "text-slate-800"
     );
   });
 });
