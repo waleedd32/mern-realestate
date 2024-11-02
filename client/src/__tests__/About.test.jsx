@@ -27,5 +27,15 @@ describe("About Component", () => {
     expect(paragraphs[0]).toHaveTextContent(
       /At Walid Estate, we pride ourselves on being a premier real estate agency/i
     );
+
+    // Test second paragraph content
+    expect(paragraphs[1]).toHaveTextContent(
+      /Our goal is to support you in reaching your real estate aspirations/i
+    );
+
+    // Test third paragraph content
+    expect(paragraphs[2]).toHaveTextContent(
+      /With years of expertise and insight in the real estate market/i
+    );
   });
 });
