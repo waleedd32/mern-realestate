@@ -47,5 +47,11 @@ describe("About Component", () => {
       "mb-4",
       "text-slate-800"
     );
+
+    // Check paragraph classes
+    const paragraphs = screen.getAllByRole("paragraph");
+    paragraphs.forEach((paragraph) => {
+      expect(paragraph).toHaveClass("mb-4", "text-slate-700");
+    });
   });
 });
