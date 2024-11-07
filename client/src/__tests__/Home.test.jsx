@@ -65,6 +65,34 @@ const mockRentListings = [
   },
 ];
 
+const mockSaleListings = [
+  {
+    _id: "5",
+    imageUrls: ["https://example.com/image5.jpg"],
+    offer: false,
+    regularPrice: 350000,
+    type: "sale",
+    name: "Luxury Villa",
+    address: "654 Birch Boulevard",
+    description: "A luxury villa with stunning views.",
+    bedrooms: 5,
+    bathrooms: 4,
+  },
+  {
+    _id: "6",
+    imageUrls: ["https://example.com/image6.jpg"],
+    offer: true,
+    discountPrice: 275000,
+    regularPrice: 300000,
+    type: "sale",
+    name: "Beachside Bungalow",
+    address: "987 Palm Drive",
+    description: "A charming bungalow by the beach.",
+    bedrooms: 2,
+    bathrooms: 2,
+  },
+];
+
 describe("Home Component", () => {
   beforeEach(() => {
     // Reset mocks before each test
@@ -100,7 +128,9 @@ describe("Home Component", () => {
     // Mocking axios responses in sequence
     axios.get
       .mockResolvedValueOnce({ data: mockOfferListings })
-      .mockResolvedValueOnce({ data: mockRentListings });
+      .mockResolvedValueOnce({ data: mockRentListings })
+      .mockResolvedValueOnce({ data: mockSaleListings });
+
     render(
       <BrowserRouter>
         <Home />
@@ -117,13 +147,14 @@ describe("Home Component", () => {
     // Retrieve all images with alt text matching /listing cover/i
     const images = await screen.findAllByAltText(/listing cover/i);
 
-    // Total listings: 2 offer + 2 rent = 4
-    expect(images).toHaveLength(4);
+    // Total listings: 2 offer + 2 rent + 2 sale = 6
+    expect(images).toHaveLength(6);
 
     // Extract all expected image URLs
     const expectedImageUrls = [
       ...mockOfferListings.map((listing) => listing.imageUrls[0]),
       ...mockRentListings.map((listing) => listing.imageUrls[0]),
+      ...mockSaleListings.map((listing) => listing.imageUrls[0]),
     ];
 
     // Verify each image's src attribute is in the expected list
