@@ -11,6 +11,7 @@ function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   SwiperCore.use([Navigation]);
 
@@ -53,6 +54,8 @@ function Home() {
         setSaleListings(response.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -62,6 +65,12 @@ function Home() {
   console.log("offerListings Home component", offerListings);
   console.log("rentListings Home component", rentListings);
   console.log("saleListings Home component", saleListings);
+
+  const SwiperSkeleton = () => (
+    <div className="skeleton-loader">
+      <div className="skeleton-row" style={{ height: "500px" }}></div>
+    </div>
+  );
 
   return (
     <div>
@@ -91,7 +100,12 @@ function Home() {
 
       {/* swiper */}
       <Swiper navigation>
-        {offerListings &&
+        {isLoading ? (
+          <SwiperSlide>
+            <SwiperSkeleton />
+          </SwiperSlide>
+        ) : (
+          offerListings &&
           offerListings.length > 0 &&
           offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
@@ -104,9 +118,11 @@ function Home() {
                 key={listing._id}
               ></div>
             </SwiperSlide>
-          ))}
+          ))
+        )}
       </Swiper>
       {/* listing results for offer, sale and rent */}
+
       <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
         {offerListings && offerListings.length > 0 && (
           <div className="">
