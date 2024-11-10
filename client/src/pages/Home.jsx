@@ -72,6 +72,51 @@ function Home() {
     </div>
   );
 
+  const ListingSkeleton = () => (
+    <div className="w-full sm:w-[330px]">
+      <div className="skeleton-loader">
+        <div className="skeleton-row" style={{ height: "320px" }}></div>
+        <div
+          className="skeleton-row"
+          style={{ height: "24px", width: "75%" }}
+        ></div>
+        <div
+          className="skeleton-row"
+          style={{ height: "16px", width: "50%" }}
+        ></div>
+        <div
+          className="skeleton-row"
+          style={{ height: "16px", width: "66%" }}
+        ></div>
+      </div>
+    </div>
+  );
+
+  const ListingsSectionSkeleton = () => (
+    <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
+      <div>
+        <div className="my-3">
+          <div className="skeleton-loader">
+            <div
+              className="skeleton-row"
+              style={{ height: "32px", width: "200px" }}
+            ></div>
+            <div
+              className="skeleton-row"
+              style={{ height: "16px", width: "150px" }}
+            ></div>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-4">
+          {/* Render 4 skeleton placeholders to match API fetch limit (limit=4) */}
+          {[1, 2, 3, 4].map((item) => (
+            <ListingSkeleton key={item} />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       {/* top */}
@@ -122,69 +167,72 @@ function Home() {
         )}
       </Swiper>
       {/* listing results for offer, sale and rent */}
-
-      <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
-        {offerListings && offerListings.length > 0 && (
-          <div className="">
-            <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent offers
-              </h2>
-              <Link
-                className="text-sm text-blue-800 hover:underline"
-                to={"/search?offer=true"}
-              >
-                Show more offers
-              </Link>
+      {isLoading ? (
+        <ListingsSectionSkeleton />
+      ) : (
+        <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
+          {offerListings && offerListings.length > 0 && (
+            <div className="">
+              <div className="my-3">
+                <h2 className="text-2xl font-semibold text-slate-600">
+                  Recent offers
+                </h2>
+                <Link
+                  className="text-sm text-blue-800 hover:underline"
+                  to={"/search?offer=true"}
+                >
+                  Show more offers
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {offerListings.map((listing) => (
+                  <ListingItem listing={listing} key={listing._id} />
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4">
-              {offerListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
-              ))}
+          )}
+          {rentListings && rentListings.length > 0 && (
+            <div className="">
+              <div className="my-3">
+                <h2 className="text-2xl font-semibold text-slate-600">
+                  Recent places for rent
+                </h2>
+                <Link
+                  className="text-sm text-blue-800 hover:underline"
+                  to={"/search?type=rent"}
+                >
+                  Show more places for rent
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {rentListings.map((listing) => (
+                  <ListingItem listing={listing} key={listing._id} />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
-        {rentListings && rentListings.length > 0 && (
-          <div className="">
-            <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent places for rent
-              </h2>
-              <Link
-                className="text-sm text-blue-800 hover:underline"
-                to={"/search?type=rent"}
-              >
-                Show more places for rent
-              </Link>
+          )}
+          {saleListings && saleListings.length > 0 && (
+            <div className="">
+              <div className="my-3">
+                <h2 className="text-2xl font-semibold text-slate-600">
+                  Recent places for sale
+                </h2>
+                <Link
+                  className="text-sm text-blue-800 hover:underline"
+                  to={"/search?type=sale"}
+                >
+                  Show more places for sale
+                </Link>
+              </div>
+              <div className="flex flex-wrap gap-4">
+                {saleListings.map((listing) => (
+                  <ListingItem listing={listing} key={listing._id} />
+                ))}
+              </div>
             </div>
-            <div className="flex flex-wrap gap-4">
-              {rentListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
-              ))}
-            </div>
-          </div>
-        )}
-        {saleListings && saleListings.length > 0 && (
-          <div className="">
-            <div className="my-3">
-              <h2 className="text-2xl font-semibold text-slate-600">
-                Recent places for sale
-              </h2>
-              <Link
-                className="text-sm text-blue-800 hover:underline"
-                to={"/search?type=sale"}
-              >
-                Show more places for sale
-              </Link>
-            </div>
-            <div className="flex flex-wrap gap-4">
-              {saleListings.map((listing) => (
-                <ListingItem listing={listing} key={listing._id} />
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
