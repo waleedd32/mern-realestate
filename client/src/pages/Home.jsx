@@ -11,7 +11,14 @@ function Home() {
   const [offerListings, setOfferListings] = useState([]);
   const [saleListings, setSaleListings] = useState([]);
   const [rentListings, setRentListings] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
+  const [isOfferLoading, setIsOfferLoading] = useState(true);
+  const [isRentLoading, setIsRentLoading] = useState(true);
+  const [isSaleLoading, setIsSaleLoading] = useState(true);
+
+  const [offerError, setOfferError] = useState(null);
+  const [rentError, setRentError] = useState(null);
+  const [saleError, setSaleError] = useState(null);
 
   SwiperCore.use([Navigation]);
 
@@ -28,9 +35,17 @@ function Home() {
         // });
 
         setOfferListings(response.data);
-        fetchRentListings();
       } catch (error) {
-        console.log(error);
+        setOfferError(
+          error.response?.data?.message || "Failed to fetch offer listings"
+        );
+        console.error("Offer listings error:", error);
+        console.error(
+          "Offer listings error message:",
+          error.response?.data?.message
+        );
+      } finally {
+        setIsOfferLoading(false);
       }
     };
 
@@ -40,9 +55,17 @@ function Home() {
           "/server/listing/get?type=rent&limit=4"
         );
         setRentListings(response.data);
-        fetchSaleListings();
       } catch (error) {
-        console.log(error);
+        setRentError(
+          error.response?.data?.message || "Failed to fetch rental listings"
+        );
+        console.error("Rent listings error:", error);
+        console.error(
+          "Rent listings error message:",
+          error.response?.data?.message
+        );
+      } finally {
+        setIsRentLoading(false);
       }
     };
 
@@ -53,14 +76,30 @@ function Home() {
         );
         setSaleListings(response.data);
       } catch (error) {
-        console.log(error);
+        setSaleError(
+          error.response?.data?.message || "Failed to fetch sale listings"
+        );
+        console.error("Sale listings error:", error);
+        console.error(
+          "Sale listings error message:",
+          error.response?.data?.message
+        );
       } finally {
-        setIsLoading(false);
+        setIsSaleLoading(false);
       }
     };
 
     fetchOfferListings();
+    fetchRentListings();
+    fetchSaleListings();
   }, []);
+
+  // Error Alert Component
+  const ErrorAlert = ({ message }) => (
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+      <span className="block sm:inline">{message}</span>
+    </div>
+  );
 
   console.log("offerListings Home component", offerListings);
   console.log("rentListings Home component", rentListings);
@@ -92,31 +131,6 @@ function Home() {
     </div>
   );
 
-  const ListingsSectionSkeleton = () => (
-    <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
-      <div>
-        <div className="my-3">
-          <div className="skeleton-loader">
-            <div
-              className="skeleton-row"
-              style={{ height: "32px", width: "200px" }}
-            ></div>
-            <div
-              className="skeleton-row"
-              style={{ height: "16px", width: "150px" }}
-            ></div>
-          </div>
-        </div>
-        <div className="flex flex-wrap gap-4">
-          {/* Render 4 skeleton placeholders to match API fetch limit (limit=4) */}
-          {[1, 2, 3, 4].map((item) => (
-            <ListingSkeleton key={item} />
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div>
       {/* top */}
@@ -143,15 +157,17 @@ function Home() {
         </Link>
       </div>
 
-      {/* swiper */}
+      {/* Swiper Section */}
       <Swiper navigation>
-        {isLoading ? (
+        {isOfferLoading ? (
           <SwiperSlide>
             <SwiperSkeleton />
           </SwiperSlide>
-        ) : (
-          offerListings &&
-          offerListings.length > 0 &&
+        ) : offerError ? (
+          <SwiperSlide>
+            <ErrorAlert message={offerError} />
+          </SwiperSlide>
+        ) : offerListings && offerListings.length > 0 ? (
           offerListings.map((listing) => (
             <SwiperSlide key={listing._id}>
               <div
@@ -160,79 +176,122 @@ function Home() {
                   backgroundSize: "cover",
                 }}
                 className="h-[500px]"
-                key={listing._id}
               ></div>
             </SwiperSlide>
           ))
+        ) : (
+          <SwiperSlide>
+            <div className="text-center text-gray-500">
+              No offer listings available.
+            </div>
+          </SwiperSlide>
         )}
       </Swiper>
-      {/* listing results for offer, sale and rent */}
-      {isLoading ? (
-        <ListingsSectionSkeleton />
-      ) : (
-        <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
-          {offerListings && offerListings.length > 0 && (
-            <div className="">
-              <div className="my-3">
-                <h2 className="text-2xl font-semibold text-slate-600">
-                  Recent offers
-                </h2>
-                <Link
-                  className="text-sm text-blue-800 hover:underline"
-                  to={"/search?offer=true"}
-                >
-                  Show more offers
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {offerListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
-                ))}
-              </div>
+
+      {/* Listing Results for Offer, Rent, and Sale */}
+      <div className="max-w-6xl mx-auto p-3 flex flex-col gap-8 my-10">
+        {/* Offer Listings Section */}
+        <div>
+          <div className="my-3 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-slate-600">
+              Recent Offers
+            </h2>
+            <Link
+              className="text-sm text-blue-800 hover:underline"
+              to={"/search?offer=true"}
+            >
+              Show more offers
+            </Link>
+          </div>
+          {isOfferLoading ? (
+            <div className="flex flex-wrap gap-4">
+              {[1, 2, 3, 4].map((item) => (
+                <ListingSkeleton key={item} />
+              ))}
             </div>
-          )}
-          {rentListings && rentListings.length > 0 && (
-            <div className="">
-              <div className="my-3">
-                <h2 className="text-2xl font-semibold text-slate-600">
-                  Recent places for rent
-                </h2>
-                <Link
-                  className="text-sm text-blue-800 hover:underline"
-                  to={"/search?type=rent"}
-                >
-                  Show more places for rent
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {rentListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
-                ))}
-              </div>
+          ) : offerError ? (
+            <ErrorAlert message={offerError} />
+          ) : offerListings && offerListings.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {offerListings.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
             </div>
-          )}
-          {saleListings && saleListings.length > 0 && (
-            <div className="">
-              <div className="my-3">
-                <h2 className="text-2xl font-semibold text-slate-600">
-                  Recent places for sale
-                </h2>
-                <Link
-                  className="text-sm text-blue-800 hover:underline"
-                  to={"/search?type=sale"}
-                >
-                  Show more places for sale
-                </Link>
-              </div>
-              <div className="flex flex-wrap gap-4">
-                {saleListings.map((listing) => (
-                  <ListingItem listing={listing} key={listing._id} />
-                ))}
-              </div>
+          ) : (
+            <div className="text-center text-gray-500">
+              No offer listings available.
             </div>
           )}
         </div>
-      )}
+
+        {/* Rent Listings Section */}
+        <div>
+          <div className="my-3 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-slate-600">
+              Recent Places for Rent
+            </h2>
+            <Link
+              className="text-sm text-blue-800 hover:underline"
+              to={"/search?type=rent"}
+            >
+              Show more places for rent
+            </Link>
+          </div>
+          {isRentLoading ? (
+            <div className="flex flex-wrap gap-4">
+              {[1, 2, 3, 4].map((item) => (
+                <ListingSkeleton key={item} />
+              ))}
+            </div>
+          ) : rentError ? (
+            <ErrorAlert message={rentError} />
+          ) : rentListings && rentListings.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {rentListings.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-500">
+              No rent listings available.
+            </div>
+          )}
+        </div>
+
+        {/* Sale Listings Section */}
+        <div>
+          <div className="my-3 flex justify-between items-center">
+            <h2 className="text-2xl font-semibold text-slate-600">
+              Recent Places for Sale
+            </h2>
+            <Link
+              className="text-sm text-blue-800 hover:underline"
+              to={"/search?type=sale"}
+            >
+              Show more places for sale
+            </Link>
+          </div>
+          {isSaleLoading ? (
+            <div className="flex flex-wrap gap-4">
+              {[1, 2, 3, 4].map((item) => (
+                <ListingSkeleton key={item} />
+              ))}
+            </div>
+          ) : saleError ? (
+            <ErrorAlert message={saleError} />
+          ) : saleListings && saleListings.length > 0 ? (
+            <div className="flex flex-wrap gap-4">
+              {saleListings.map((listing) => (
+                <ListingItem listing={listing} key={listing._id} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center text-gray-500">
+              No sale listings available.
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
