@@ -95,8 +95,11 @@ function Home() {
   }, []);
 
   // Error Alert Component
-  const ErrorAlert = ({ message }) => (
-    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+  const ErrorAlert = ({ message, testId }) => (
+    <div
+      className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+      data-testid={testId}
+    >
       <span className="block sm:inline">{message}</span>
     </div>
   );
@@ -165,7 +168,7 @@ function Home() {
           </SwiperSlide>
         ) : offerError ? (
           <SwiperSlide>
-            <ErrorAlert message={offerError} />
+            <ErrorAlert message={offerError} testId="offer-swiper-error" />
           </SwiperSlide>
         ) : offerListings && offerListings.length > 0 ? (
           offerListings.map((listing) => (
@@ -210,7 +213,7 @@ function Home() {
               ))}
             </div>
           ) : offerError ? (
-            <ErrorAlert message={offerError} />
+            <ErrorAlert message={offerError} testId="offer-section-error" />
           ) : offerListings && offerListings.length > 0 ? (
             <div className="flex flex-wrap gap-4">
               {offerListings.map((listing) => (
@@ -244,7 +247,7 @@ function Home() {
               ))}
             </div>
           ) : rentError ? (
-            <ErrorAlert message={rentError} />
+            <ErrorAlert message={rentError} testId="rent-section-error" />
           ) : rentListings && rentListings.length > 0 ? (
             <div className="flex flex-wrap gap-4">
               {rentListings.map((listing) => (
@@ -278,7 +281,7 @@ function Home() {
               ))}
             </div>
           ) : saleError ? (
-            <ErrorAlert message={saleError} />
+            <ErrorAlert message={saleError} testId="sale-section-error" />
           ) : saleListings && saleListings.length > 0 ? (
             <div className="flex flex-wrap gap-4">
               {saleListings.map((listing) => (

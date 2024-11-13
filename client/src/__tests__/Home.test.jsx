@@ -93,6 +93,11 @@ const mockSaleListings = [
   },
 ];
 
+// Error messages
+const offerErrorMessage = "Failed to fetch offer listings";
+const rentErrorMessage = "Failed to fetch rental listings";
+const saleErrorMessage = "Failed to fetch sale listings";
+
 describe("Home Component", () => {
   beforeEach(() => {
     // Reset mocks before each test
@@ -150,16 +155,44 @@ describe("Home Component", () => {
     // Total listings: 2 offer + 2 rent + 2 sale = 6
     expect(images).toHaveLength(6);
 
-    // Extract all expected image URLs
+    // Extracting all expected image URLs
     const expectedImageUrls = [
       ...mockOfferListings.map((listing) => listing.imageUrls[0]),
       ...mockRentListings.map((listing) => listing.imageUrls[0]),
       ...mockSaleListings.map((listing) => listing.imageUrls[0]),
     ];
 
-    // Verify each image's src attribute is in the expected list
+    // Verifying each image's src attribute is in the expected list
     images.forEach((image) => {
       expect(expectedImageUrls).toContain(image.getAttribute("src"));
     });
+  });
+
+  // Test Case 1: Error in fetchOfferListings
+  it("displays error messages when fetching offer listings fails", async () => {
+    // - First call (offer) fails
+    // - Second and third calls (rent and sale) succeed
+    axios.get
+      .mockRejectedValueOnce({
+        response: { data: { message: offerErrorMessage } },
+      })
+      .mockResolvedValueOnce({ data: mockRentListings })
+      .mockResolvedValueOnce({ data: mockSaleListings });
+
+    render(
+      <BrowserRouter>
+        <Home />
+      </BrowserRouter>
+    );
+
+    // Waiting for the Swiper error message
+    const swiperError = await screen.findByTestId("offer-swiper-error");
+    expect(swiperError).toBeInTheDocument();
+    expect(swiperError).toHaveTextContent(offerErrorMessage);
+
+    // Waiting for the Offer Listings section error message
+    const offerSectionError = await screen.findByTestId("offer-section-error");
+    expect(offerSectionError).toBeInTheDocument();
+    expect(offerSectionError).toHaveTextContent(offerErrorMessage);
   });
 });
