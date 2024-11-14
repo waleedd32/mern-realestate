@@ -195,4 +195,28 @@ describe("Home Component", () => {
     expect(offerSectionError).toBeInTheDocument();
     expect(offerSectionError).toHaveTextContent(offerErrorMessage);
   });
+
+  // Test Case 2: Error in fetchRentListings
+  it("displays error message when fetching rent listings fails", async () => {
+    // - First call (offer) succeeds
+    // - Second call (rent) fails
+    // - Third call (sale) succeeds
+    axios.get
+      .mockResolvedValueOnce({ data: mockOfferListings })
+      .mockRejectedValueOnce({
+        response: { data: { message: rentErrorMessage } },
+      })
+      .mockResolvedValueOnce({ data: mockSaleListings });
+
+    render(
+      <BrowserRouter>
+        <Home />
+      </BrowserRouter>
+    );
+
+    // Waiting for the Rent Listings section error message
+    const rentSectionError = await screen.findByTestId("rent-section-error");
+    expect(rentSectionError).toBeInTheDocument();
+    expect(rentSectionError).toHaveTextContent(rentErrorMessage);
+  });
 });
