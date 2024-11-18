@@ -104,7 +104,12 @@ describe("Home Component", () => {
     axios.get.mockReset();
   });
 
-  it("renders top section correctly", () => {
+  it("renders top section correctly", async () => {
+    axios.get
+      .mockResolvedValueOnce({ data: [] }) // Offer listings
+      .mockResolvedValueOnce({ data: [] }) // Rent listings
+      .mockResolvedValueOnce({ data: [] }); // Sale listings
+
     render(
       <BrowserRouter>
         <Home />
@@ -119,14 +124,14 @@ describe("Home Component", () => {
     expect(heading).toBeInTheDocument();
 
     // Verify the subtext
-    expect(
-      screen.getByText(
-        /Walid Estate is the best place to find your next perfect place to live/i
-      )
-    ).toBeInTheDocument();
+    const subtext = await screen.findByText(
+      /Walid Estate is the best place to find your next perfect place to live/i
+    );
+    expect(subtext).toBeInTheDocument();
 
     // Verify the link
-    expect(screen.getByText(/Let's get started.../i)).toBeInTheDocument();
+    const link = await screen.findByText(/Let's get started.../i);
+    expect(link).toBeInTheDocument();
   });
 
   it("fetches and displays offer, rent listings", async () => {
@@ -146,6 +151,12 @@ describe("Home Component", () => {
     await waitFor(() => {
       expect(axios.get).toHaveBeenCalledWith(
         "/server/listing/get?offer=true&limit=4"
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        "/server/listing/get?type=rent&limit=4"
+      );
+      expect(axios.get).toHaveBeenCalledWith(
+        "/server/listing/get?type=sale&limit=4"
       );
     });
 
