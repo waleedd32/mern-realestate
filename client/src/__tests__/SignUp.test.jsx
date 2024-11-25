@@ -96,4 +96,21 @@ describe("SignUp Component", () => {
       screen.queryByText(/./, { selector: ".text-red-500" })
     ).not.toBeInTheDocument();
   });
+
+  it('renders "Have an account?" text and "Sign in" link correctly', () => {
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText(/have an account\?/i)).toBeInTheDocument();
+
+    // Checking for the presence of the "Sign in" link
+    const signInLink = screen.getByRole("link", { name: /sign in/i });
+    expect(signInLink).toBeInTheDocument();
+
+    // Confirm that the link navigates to "/sign-in"
+    expect(signInLink).toHaveAttribute("href", "/sign-in");
+  });
 });
