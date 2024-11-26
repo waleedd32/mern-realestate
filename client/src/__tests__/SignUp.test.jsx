@@ -113,4 +113,51 @@ describe("SignUp Component", () => {
     // Confirm that the link navigates to "/sign-in"
     expect(signInLink).toHaveAttribute("href", "/sign-in");
   });
+
+  it("displays an error message when API returns an error", async () => {
+    // Mock an API error response
+    axios.post.mockRejectedValue({
+      response: {
+        data: {
+          message: "Email already exists.",
+        },
+      },
+    });
+
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
+
+    await userEvent.type(screen.getByPlaceholderText("username"), "testuser");
+    await userEvent.type(
+      screen.getByPlaceholderText("email"),
+      "existing@example.com"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("password"),
+      "password123"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    // Assert that the button shows loading state
+    expect(screen.getByRole("button", { name: /loading.../i })).toBeDisabled();
+
+    // Waiting for the API call and error handling
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith("/server/auth/signup", {
+        username: "testuser",
+        email: "existing@example.com",
+        password: "password123",
+      });
+
+      // Verifying that the error message is displayed
+      expect(screen.getByText("Email already exists.")).toBeInTheDocument();
+    });
+
+    // Ensuring loading is false and error is shown
+    expect(screen.getByRole("button", { name: /sign up/i })).not.toBeDisabled();
+  });
 });
