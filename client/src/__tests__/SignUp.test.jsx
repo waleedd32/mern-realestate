@@ -119,7 +119,7 @@ describe("SignUp Component", () => {
     axios.post.mockRejectedValue({
       response: {
         data: {
-          message: "Email already exists.",
+          message: "Network error. Please try again later.",
         },
       },
     });
@@ -154,10 +154,63 @@ describe("SignUp Component", () => {
       });
 
       // Verifying that the error message is displayed
-      expect(screen.getByText("Email already exists.")).toBeInTheDocument();
+      expect(
+        screen.getByText("Network error. Please try again later.")
+      ).toBeInTheDocument();
     });
 
     // Ensuring loading is false and error is shown
     expect(screen.getByRole("button", { name: /sign up/i })).not.toBeDisabled();
+  });
+
+  it("displays an error message when API returns success: false", async () => {
+    // Mock an API response with success: false
+    axios.post.mockResolvedValue({
+      data: {
+        success: false,
+        message: "Email already exists.",
+      },
+    });
+
+    render(
+      <BrowserRouter>
+        <SignUp />
+      </BrowserRouter>
+    );
+
+    // Fill the form
+    await userEvent.type(screen.getByPlaceholderText("username"), "testuser");
+    await userEvent.type(
+      screen.getByPlaceholderText("email"),
+      "existing@example.com"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("password"),
+      "password123"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /sign up/i }));
+
+    // Assert that the button shows loading state
+    expect(screen.getByRole("button", { name: /loading.../i })).toBeDisabled();
+
+    // Waiting for the API call and error handling
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith("/server/auth/signup", {
+        username: "testuser",
+        email: "existing@example.com",
+        password: "password123",
+      });
+
+      // Verifying that the error message is displayed
+      expect(screen.getByText("Email already exists.")).toBeInTheDocument();
+
+      // Ensuring that navigate was not called
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    // Ensuring loading is false and error is shown
+    expect(screen.getByRole("button", { name: /sign up/i })).not.toBeDisabled();
+    expect(screen.getByText("Email already exists.")).toBeInTheDocument();
   });
 });
