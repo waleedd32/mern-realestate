@@ -65,4 +65,24 @@ describe("SignIn Component", () => {
       screen.getByRole("button", { name: /sign in/i })
     ).toBeInTheDocument();
   });
+
+  it('renders "Dont have an account?" text and "Sign in" link correctly', () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <SignIn />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText(/dont have an account\?/i)).toBeInTheDocument();
+
+    // Checking for the presence of the "Sign in" link
+    const signUpLink = screen.getByRole("link", { name: /sign in/i });
+    expect(signUpLink).toBeInTheDocument();
+
+    // Confirm that the link navigates to "/sign-up"
+    expect(signUpLink).toHaveAttribute("href", "/sign-up");
+  });
 });
