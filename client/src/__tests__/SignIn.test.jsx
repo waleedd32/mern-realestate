@@ -141,4 +141,55 @@ describe("SignIn Component", () => {
     // Confirm that the link navigates to "/sign-up"
     expect(signUpLink).toHaveAttribute("href", "/sign-up");
   });
+
+  it("displays an error message when API returns an error", async () => {
+    const store = createMockStore();
+
+    // Mock an API error response
+    axios.post.mockRejectedValue({
+      response: {
+        data: {
+          message: "Invalid credentials. Please try again.",
+        },
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <SignIn />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await userEvent.type(
+      screen.getByPlaceholderText("email"),
+      "invalid@example.com"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("password"),
+      "wrongpassword"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    // Assert that the button shows loading state
+    expect(screen.getByRole("button", { name: /loading.../i })).toBeDisabled();
+
+    // Waiting for the API call and error handling
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith("/server/auth/signin", {
+        email: "invalid@example.com",
+        password: "wrongpassword",
+      });
+
+      // Verifying that the error message is displayed
+      expect(
+        screen.getByText("Invalid credentials. Please try again.")
+      ).toBeInTheDocument();
+    });
+
+    // Ensuring loading is false and error is shown
+    expect(screen.getByRole("button", { name: /sign in/i })).not.toBeDisabled();
+  });
 });
