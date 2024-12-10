@@ -192,4 +192,57 @@ describe("SignIn Component", () => {
     // Ensuring loading is false and error is shown
     expect(screen.getByRole("button", { name: /sign in/i })).not.toBeDisabled();
   });
+
+  it("displays an error message when API returns success: false", async () => {
+    const store = createMockStore();
+
+    // Mock an API response with success: false
+    axios.post.mockResolvedValue({
+      data: {
+        success: false,
+        message: "User not found.",
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <SignIn />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Fill the form
+    await userEvent.type(
+      screen.getByPlaceholderText("email"),
+      "nonexistent@example.com"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("password"),
+      "somepassword"
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: /sign in/i }));
+
+    // Assert that the button shows loading state
+    expect(screen.getByRole("button", { name: /loading.../i })).toBeDisabled();
+
+    // Waiting for the API call and error handling
+    await waitFor(() => {
+      expect(axios.post).toHaveBeenCalledWith("/server/auth/signin", {
+        email: "nonexistent@example.com",
+        password: "somepassword",
+      });
+
+      // Verifying that the error message is displayed
+      expect(screen.getByText("User not found.")).toBeInTheDocument();
+
+      // Ensuring that navigate was not called
+      expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    // Ensuring loading is false and error is shown
+    expect(screen.getByRole("button", { name: /sign in/i })).not.toBeDisabled();
+    expect(screen.getByText("User not found.")).toBeInTheDocument();
+  });
 });
