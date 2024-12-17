@@ -146,4 +146,36 @@ describe("CreateListing Component", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/listing/new-listing-id");
     });
   });
+
+  it("handles multiple image uploads", async () => {
+    const store = createMockStore();
+
+    // Creating multiple test files
+    const files = [
+      new File(["test image 1"], "test1.png", { type: "image/png" }),
+      new File(["test image 2"], "test2.png", { type: "image/png" }),
+    ];
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Uploading multiple images
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, files);
+
+    // Clicking upload button
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Checking that images are displayed
+    await waitFor(() => {
+      const images = screen.getAllByAltText("listing image");
+      expect(images.length).toBe(2);
+    });
+  });
 });
