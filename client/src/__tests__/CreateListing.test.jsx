@@ -215,4 +215,41 @@ describe("CreateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("removes an uploaded image", async () => {
+    const store = createMockStore();
+
+    // Mocking file for image upload
+    const file = new File(["test image"], "test.png", { type: "image/png" });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Uploading image
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, file);
+
+    // clicking upload button
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Checking that the image is actually present with the expected alt text before deleting
+    const uploadedImage = await screen.findByAltText("listing image");
+    expect(uploadedImage).toBeInTheDocument();
+
+    // Finding and clicking delete button
+    const deleteButton = await screen.findByRole("button", { name: /delete/i });
+    await userEvent.click(deleteButton);
+
+    // Verifying image is removed
+    await waitFor(() => {
+      const images = screen.queryAllByAltText("listing image");
+      expect(images.length).toBe(0);
+    });
+  });
 });
