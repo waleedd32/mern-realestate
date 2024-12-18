@@ -178,4 +178,41 @@ describe("CreateListing Component", () => {
       expect(images.length).toBe(2);
     });
   });
+
+  it("prevents uploading more than 6 images", async () => {
+    const store = createMockStore();
+
+    // Creating 7 test files
+    const files = Array(7)
+      .fill(null)
+      .map(
+        (_, index) =>
+          new File([`test image ${index}`], `test${index}.png`, {
+            type: "image/png",
+          })
+      );
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Uploading multiple images
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, files);
+
+    // Clicking upload button
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Checking for upload error message
+    await waitFor(() => {
+      expect(
+        screen.getByText(/you can only upload 6 images per listing/i)
+      ).toBeInTheDocument();
+    });
+  });
 });
