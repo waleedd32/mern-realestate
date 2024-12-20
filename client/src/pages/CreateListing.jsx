@@ -245,6 +245,7 @@ function CreateListing() {
                 type="checkbox"
                 id="offer"
                 className="w-5"
+                data-testid="offer-checkbox"
                 onChange={handleChange}
                 checked={formData.offer}
               />
@@ -286,6 +287,7 @@ function CreateListing() {
                 max="10000000"
                 required
                 className="p-3 border border-gray-300 rounded-lg"
+                data-testid="regular-price"
                 onChange={handleChange}
                 value={formData.regularPrice}
               />
@@ -305,6 +307,7 @@ function CreateListing() {
                   max="10000000"
                   required
                   className="p-3 border border-gray-300 rounded-lg"
+                  data-testid="discount-price"
                   onChange={handleChange}
                   value={formData.discountPrice}
                 />
