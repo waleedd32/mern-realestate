@@ -314,4 +314,36 @@ describe("CreateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("displays error when submitting without images", async () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await userEvent.type(screen.getByPlaceholderText("Name"), "Test Property");
+    await userEvent.type(
+      screen.getByPlaceholderText("Description"),
+      "Test Description"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("Address"),
+      "Test Address"
+    );
+
+    // Submit form without uploading images
+    const submitButton = screen.getByRole("button", {
+      name: /create listing/i,
+    });
+    await userEvent.click(submitButton);
+
+    // Checking for error message
+    expect(
+      screen.getByText("You must upload at least one image")
+    ).toBeInTheDocument();
+  });
 });
