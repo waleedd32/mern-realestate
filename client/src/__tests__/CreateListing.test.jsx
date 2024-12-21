@@ -346,4 +346,53 @@ describe("CreateListing Component", () => {
       screen.getByText("You must upload at least one image")
     ).toBeInTheDocument();
   });
+
+  it("handles API error during listing creation", async () => {
+    const store = createMockStore();
+    const errorMessage = "Server error occurred";
+
+    // Mocking API error
+    axios.post.mockRejectedValue({ message: errorMessage });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Fill required fields
+    await userEvent.type(
+      screen.getByPlaceholderText("Name"),
+      "Modern Apartment"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("Description"),
+      "A spacious and well-lit modern apartment with 3 bedrooms and 2 bathrooms."
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("Address"),
+      "123 Main Street, Springfield, USA"
+    );
+
+    // Uploading a mock image
+    const file = new File(["test"], "test.png", { type: "image/png" });
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, file);
+
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Submit form
+    const submitButton = screen.getByRole("button", {
+      name: /create listing/i,
+    });
+    await userEvent.click(submitButton);
+
+    // Checking for error message
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
 });
