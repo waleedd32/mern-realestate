@@ -8,6 +8,7 @@ import userReducer from "../redux/user/userSlice";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 import userEvent from "@testing-library/user-event";
+import { uploadBytesResumable } from "firebase/storage";
 
 // Mocking Firebase storage methods
 vi.mock("firebase/storage", () => ({
@@ -393,6 +394,41 @@ describe("CreateListing Component", () => {
     // Checking for error message
     await waitFor(() => {
       expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+  });
+
+  it("handles image upload failure", async () => {
+    const store = createMockStore();
+
+    // Mocking the uploadBytesResumable to simulate failure
+    const uploadError = new Error("Upload failed");
+    vi.mocked(uploadBytesResumable).mockImplementationOnce(() => ({
+      snapshot: { ref: {} },
+      on: vi.fn((_, __, onError) => onError(uploadError)),
+    }));
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Uploading a test file
+    const file = new File(["test image"], "test.png", { type: "image/png" });
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, file);
+
+    // Clicking upload button
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Verifying error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Image upload failed (2 mb max per image)")
+      ).toBeInTheDocument();
     });
   });
 });
