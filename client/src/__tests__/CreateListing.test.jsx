@@ -431,4 +431,59 @@ describe("CreateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("handles unsuccessful API response with error message", async () => {
+    const store = createMockStore();
+    const errorMessage = "Invalid listing data";
+
+    // Mock API response with success: false
+    axios.post.mockResolvedValue({
+      data: {
+        success: false,
+        message: errorMessage,
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Fill needed fields
+    await userEvent.type(screen.getByPlaceholderText("Name"), "Test Property");
+    await userEvent.type(
+      screen.getByPlaceholderText("Description"),
+      "Test Description"
+    );
+    await userEvent.type(
+      screen.getByPlaceholderText("Address"),
+      "Test Address"
+    );
+
+    // Uploading an image (since it's required)
+    const file = new File(["test"], "test.png", { type: "image/png" });
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, file);
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Submit form
+    const submitButton = screen.getByRole("button", {
+      name: /create listing/i,
+    });
+    await userEvent.click(submitButton);
+
+    // Checking if error message is displayed
+    await waitFor(() => {
+      expect(screen.getByText(errorMessage)).toBeInTheDocument();
+    });
+
+    // Verify loading state is handled correctly
+    expect(
+      screen.getByRole("button", { name: /create listing/i })
+    ).not.toBeDisabled();
+  });
 });
