@@ -486,4 +486,37 @@ describe("CreateListing Component", () => {
       screen.getByRole("button", { name: /create listing/i })
     ).not.toBeDisabled();
   });
+
+  it("updates form type when sale/rent radio is clicked", async () => {
+    const store = createMockStore();
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Initially type should be "rent" (its default value)
+    const rentCheckbox = screen.getByTestId("rent-checkbox");
+    const saleCheckbox = screen.getByTestId("sale-checkbox");
+
+    expect(rentCheckbox).toBeChecked();
+    expect(saleCheckbox).not.toBeChecked();
+
+    // Clicking sale checkbox
+    await userEvent.click(saleCheckbox);
+
+    // Verify state changes
+    expect(saleCheckbox).toBeChecked();
+    expect(rentCheckbox).not.toBeChecked();
+
+    // Clicking rent checkbox again
+    await userEvent.click(rentCheckbox);
+
+    // Verify state changes back
+    expect(rentCheckbox).toBeChecked();
+    expect(saleCheckbox).not.toBeChecked();
+  });
 });
