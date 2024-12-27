@@ -519,4 +519,37 @@ describe("CreateListing Component", () => {
     expect(rentCheckbox).toBeChecked();
     expect(saleCheckbox).not.toBeChecked();
   });
+
+  it("handles error thrown directly in storeImage function", async () => {
+    const store = createMockStore();
+
+    // Temporarily override uploadBytesResumable to throw the error
+    vi.mocked(uploadBytesResumable).mockImplementationOnce(() => {
+      throw new Error("Image upload failed");
+    });
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <CreateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Uploading a test file
+    const file = new File(["test image"], "test.png", { type: "image/png" });
+    const fileInput = screen.getByTestId("images-file-input");
+    await userEvent.upload(fileInput, file);
+
+    // Clicking upload button
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    await userEvent.click(uploadButton);
+
+    // Verify error message is displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Image upload failed (2 mb max per image)")
+      ).toBeInTheDocument();
+    });
+  });
 });
