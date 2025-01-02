@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { BrowserRouter } from "react-router-dom";
@@ -44,5 +44,22 @@ describe("Listing Component", () => {
     );
 
     expect(screen.getByText("Loading...")).toBeInTheDocument();
+  });
+
+  it("shows error state when API call fails", async () => {
+    axios.get.mockRejectedValueOnce(new Error("Failed to fetch"));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Something went wrong!")).toBeInTheDocument();
+    });
   });
 });
