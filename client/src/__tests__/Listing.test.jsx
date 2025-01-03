@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
 import { configureStore } from "@reduxjs/toolkit";
 import { BrowserRouter } from "react-router-dom";
@@ -105,5 +105,55 @@ describe("Listing Component", () => {
     expect(screen.getByText("2 baths", { exact: false })).toBeInTheDocument();
     expect(screen.getByText("Parking spot")).toBeInTheDocument();
     expect(screen.getByText("Furnished")).toBeInTheDocument();
+  });
+
+  it("handles copy link functionality", async () => {
+    //  Mocking the Clipboard API
+    Object.assign(navigator, {
+      clipboard: {
+        // here Mocking writeText to return a resolved promise
+        writeText: vi.fn().mockResolvedValue(),
+      },
+    });
+
+    //  Mocking the Axios GET request
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    //  Create the mock store
+    const store = createMockStore();
+
+    //  Render the Listing component
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    //  Waiting for the Listing to Load
+    await waitFor(() => {
+      expect(screen.getByTestId("listing-name")).toBeInTheDocument();
+    });
+
+    //  Find the share button and click it
+    const shareButton = screen.getByTestId("share-button");
+    fireEvent.click(shareButton);
+
+    //  Verify that navigator.clipboard.writeText was called with the correct URL
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
+      window.location.href
+    );
+
+    //  Verify that the "Link copied!" message appears
+    expect(screen.getByText("Link copied!")).toBeInTheDocument();
+
+    //  Wait for the "Link copied!" message to Disappear
+    await waitFor(
+      () => {
+        expect(screen.queryByText("Link copied!")).not.toBeInTheDocument();
+      },
+      { timeout: 2100 } // Slightly more than the 2000ms timeout in the component
+    );
   });
 });
