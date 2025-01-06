@@ -156,4 +156,21 @@ describe("Listing Component", () => {
       { timeout: 2100 } // Slightly more than the 2000ms timeout in the component
     );
   });
+
+  it("shows contact landlord button for non-owner users", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Contact landlord")).toBeInTheDocument();
+    });
+  });
 });
