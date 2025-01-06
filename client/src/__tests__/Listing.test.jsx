@@ -173,4 +173,26 @@ describe("Listing Component", () => {
       expect(screen.getByText("Contact landlord")).toBeInTheDocument();
     });
   });
+
+  it("does not show contact button for listing owner", async () => {
+    const listingWithCurrentUserAsOwner = {
+      ...mockListing,
+      userRef: "test-user-id",
+    };
+
+    axios.get.mockResolvedValueOnce({ data: listingWithCurrentUserAsOwner });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.queryByText("Contact landlord")).not.toBeInTheDocument();
+    });
+  });
 });
