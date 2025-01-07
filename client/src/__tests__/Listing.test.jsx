@@ -230,4 +230,31 @@ describe("Listing Component", () => {
       expect(swiperSlides).toHaveLength(mockListing.imageUrls.length);
     });
   });
+
+  it("toggles contact form when contact button is clicked", async () => {
+    axios.get
+      // First mock handles the listing data fetch in Listing component
+      .mockResolvedValueOnce({ data: mockListing })
+      // Second mock handles the landlord data fetch in Contact component
+      // Without this, the landlord would be null and the form wouldn't render
+      .mockResolvedValueOnce({
+        data: { username: "Test Landlord", email: "test@example.com" },
+      });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const contactButton = screen.getByText("Contact landlord");
+      fireEvent.click(contactButton);
+    });
+
+    expect(screen.getByTestId("contact-form")).toBeInTheDocument();
+  });
 });

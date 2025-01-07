@@ -28,7 +28,7 @@ function Contact({ listing }) {
     <>
       {" "}
       {landlord && (
-        <div className="flex flex-col gap-2">
+        <div data-testid="contact-form" className="flex flex-col gap-2">
           <p>
             Contact <span className="font-semibold">{landlord.username}</span>{" "}
             for{" "}
