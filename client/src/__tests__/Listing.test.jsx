@@ -9,6 +9,23 @@ import Listing from "../pages/Listing";
 // Mocking the modules
 vi.mock("axios");
 
+// Mocking Swiper components
+vi.mock("swiper/react", () => ({
+  Swiper: ({ children }) => <div data-testid="swiper">{children}</div>,
+  SwiperSlide: ({ children }) => (
+    <div data-testid="swiper-slide">{children}</div>
+  ),
+}));
+
+// Mocking swiper modules
+vi.mock("swiper", () => ({
+  default: { use: vi.fn() },
+}));
+
+vi.mock("swiper/modules", () => ({
+  Navigation: vi.fn(),
+}));
+
 // Creating mock store
 const createMockStore = (initialState = {}) => {
   return configureStore({
@@ -193,6 +210,24 @@ describe("Listing Component", () => {
 
     await waitFor(() => {
       expect(screen.queryByText("Contact landlord")).not.toBeInTheDocument();
+    });
+  });
+
+  it("displays images in swiper", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      const swiperSlides = screen.getAllByTestId("swiper-slide");
+      expect(swiperSlides).toHaveLength(mockListing.imageUrls.length);
     });
   });
 });
