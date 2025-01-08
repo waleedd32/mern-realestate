@@ -257,4 +257,21 @@ describe("Listing Component", () => {
 
     expect(screen.getByTestId("contact-form")).toBeInTheDocument();
   });
+
+  it("shows discount information when offer exists", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("$200 OFF")).toBeInTheDocument();
+    });
+  });
 });
