@@ -274,4 +274,34 @@ describe("Listing Component", () => {
       expect(screen.getByText("$200 OFF")).toBeInTheDocument();
     });
   });
+
+  it("shows error message when API returns success: false", async () => {
+    // Mocking the API response with success: false
+    axios.get.mockResolvedValueOnce({
+      data: { success: false, message: "Listing not found" },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Initially should show loading
+    expect(screen.getByText("Loading...")).toBeInTheDocument();
+
+    // Waiting for the error message to appear
+    await waitFor(() => {
+      expect(screen.getByText("Something went wrong!")).toBeInTheDocument();
+    });
+
+    // Make sure loading message is no longer shown
+    expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+
+    // Make sure the API was called
+    expect(axios.get).toHaveBeenCalled();
+  });
 });
