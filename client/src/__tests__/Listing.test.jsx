@@ -304,4 +304,51 @@ describe("Listing Component", () => {
     // Make sure the API was called
     expect(axios.get).toHaveBeenCalled();
   });
+
+  it("displays rental property without discount correctly", async () => {
+    const mockListing = {
+      name: "Basic Apartment",
+      type: "rent",
+      offer: false,
+      regularPrice: 1500,
+      imageUrls: [],
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    render(
+      <Provider store={createMockStore()}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const listingName = await screen.findByTestId("listing-name");
+    expect(listingName).toHaveTextContent("Basic Apartment - $ 1,500 / month");
+  });
+
+  it("displays rental property with discount price correctly", async () => {
+    const mockListing = {
+      name: "Luxury Apartment",
+      type: "rent",
+      offer: true,
+      regularPrice: 2500,
+      discountPrice: 2000,
+      imageUrls: [],
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    render(
+      <Provider store={createMockStore()}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const listingName = await screen.findByTestId("listing-name");
+    expect(listingName).toHaveTextContent("Luxury Apartment - $ 2,000 / month");
+  });
 });
