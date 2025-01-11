@@ -351,4 +351,53 @@ describe("Listing Component", () => {
     const listingName = await screen.findByTestId("listing-name");
     expect(listingName).toHaveTextContent("Luxury Apartment - $ 2,000 / month");
   });
+
+  it("displays property for sale with discount correctly", async () => {
+    const mockListing = {
+      name: "Family House",
+      type: "sale",
+      offer: true,
+      regularPrice: 500000,
+      discountPrice: 450000,
+      imageUrls: [],
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    render(
+      <Provider store={createMockStore()}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const listingName = await screen.findByTestId("listing-name");
+    expect(listingName).toHaveTextContent("Family House - $ 450,000");
+    expect(listingName).not.toHaveTextContent("/ month");
+  });
+
+  it("displays property for sale without discount correctly", async () => {
+    const mockListing = {
+      name: "Vacation Home",
+      type: "sale",
+      offer: false,
+      regularPrice: 300000,
+      imageUrls: [],
+    };
+
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    render(
+      <Provider store={createMockStore()}>
+        <BrowserRouter>
+          <Listing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const listingName = await screen.findByTestId("listing-name");
+    expect(listingName).toHaveTextContent("Vacation Home - $ 300,000");
+    expect(listingName).not.toHaveTextContent("/ month");
+  });
 });
