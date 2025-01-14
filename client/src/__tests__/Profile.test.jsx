@@ -58,4 +58,45 @@ describe("Profile Component", () => {
     expect(usernameInput).toHaveValue("testuser");
     expect(emailInput).toHaveValue("test@example.com");
   });
+
+  it("handles user updates successfully and shows success message", async () => {
+    // Mocking a successful update response
+    axios.post.mockResolvedValueOnce({
+      data: {
+        success: true,
+        username: "updatedUser",
+        email: "updated@example.com",
+        avatar: "updated-avatar-link.jpg",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Changing username
+    const usernameInput = screen.getByPlaceholderText("username");
+    fireEvent.change(usernameInput, { target: { value: "updatedUser" } });
+
+    const updateButton = screen.getByRole("button", { name: /update/i });
+    fireEvent.click(updateButton);
+
+    // Waiting for success message to appear
+    await waitFor(() =>
+      expect(
+        screen.getByText("User is updated successfully!")
+      ).toBeInTheDocument()
+    );
+
+    // Checking that axios was called with the right endpoint
+    expect(axios.post).toHaveBeenCalledWith(
+      "/server/user/update/test-user-id",
+      expect.objectContaining({ username: "updatedUser" })
+    );
+  });
 });
