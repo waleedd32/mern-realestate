@@ -5,6 +5,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { BrowserRouter } from "react-router-dom";
 import axios from "axios";
 import Profile from "../pages/Profile";
+import userReducer from "../redux/user/userSlice";
 
 // Mocking axios
 vi.mock("axios");
@@ -13,7 +14,7 @@ vi.mock("axios");
 const createMockStore = (initialState = {}) => {
   return configureStore({
     reducer: {
-      user: (state = initialState) => state,
+      user: userReducer,
     },
     preloadedState: {
       user: {
@@ -97,6 +98,33 @@ describe("Profile Component", () => {
     expect(axios.post).toHaveBeenCalledWith(
       "/server/user/update/test-user-id",
       expect.objectContaining({ username: "updatedUser" })
+    );
+  });
+
+  it("displays error message when update fails", async () => {
+    // Mocking a failed update response
+    axios.post.mockRejectedValueOnce({
+      response: {
+        data: { message: "Update failed from server" },
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking Update
+    const updateButton = screen.getByRole("button", { name: /update/i });
+    fireEvent.click(updateButton);
+
+    // Waiting for error message
+    await waitFor(() =>
+      expect(screen.getByText("Update failed from server")).toBeInTheDocument()
     );
   });
 });
