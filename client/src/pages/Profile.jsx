@@ -195,7 +195,7 @@ function Profile() {
         />{" "}
         <img
           onClick={() => fileRef.current.click()}
-          src={formData.avatar || currentUser.avatar}
+          src={formData.avatar || currentUser?.avatar}
           alt="profile"
           className="rounded-full h-24 w-24 object-cover cursor-pointer self-center mt-2"
         />
@@ -215,7 +215,7 @@ function Profile() {
         <input
           type="text"
           placeholder="username"
-          defaultValue={currentUser.username}
+          defaultValue={currentUser?.username}
           id="username"
           className="border p-3 rounded-lg"
           onChange={handleChange}
@@ -223,7 +223,7 @@ function Profile() {
         <input
           type="email"
           placeholder="email"
-          defaultValue={currentUser.email}
+          defaultValue={currentUser?.email}
           id="email"
           className="border p-3 rounded-lg"
           onChange={handleChange}

@@ -127,4 +127,34 @@ describe("Profile Component", () => {
       expect(screen.getByText("Update failed from server")).toBeInTheDocument()
     );
   });
+
+  it("handles user account deletion", async () => {
+    // Mocking a successful delete response
+    axios.delete.mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: "User has been deleted!",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking Delete account
+    const deleteLink = screen.getByText("Delete account");
+    fireEvent.click(deleteLink);
+
+    // Waiting for the axios call to resolve
+    await waitFor(() => {
+      expect(axios.delete).toHaveBeenCalledWith(
+        "/server/user/delete/test-user-id"
+      );
+    });
+  });
 });
