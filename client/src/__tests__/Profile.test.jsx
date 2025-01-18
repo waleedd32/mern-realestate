@@ -185,4 +185,74 @@ describe("Profile Component", () => {
       expect(axios.get).toHaveBeenCalledWith("/server/auth/signout");
     });
   });
+
+  it("displays Show Listings button", () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    expect(screen.getByText("Show Listings")).toBeInTheDocument();
+  });
+
+  it("fetches and displays user listings on 'Show Listings' click", async () => {
+    // our random listings data
+    const mockListings = [
+      {
+        _id: "listing1",
+        name: "Cozy Apartment",
+        imageUrls: ["apartment-image.jpg"],
+      },
+      {
+        _id: "listing2",
+        name: "Beach House",
+        imageUrls: ["beach-house-image.jpg"],
+      },
+      {
+        _id: "listing3",
+        name: "Mountain Cabin",
+        imageUrls: ["cabin-image.jpg"],
+      },
+    ];
+
+    // Mocking successful API response
+    axios.get.mockResolvedValueOnce({ data: mockListings });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking the Show Listings button
+    const showListingsButton = screen.getByText("Show Listings");
+    fireEvent.click(showListingsButton);
+
+    // Waiting for listings to appear
+    await waitFor(() => {
+      expect(screen.getByText("Your Listings")).toBeInTheDocument();
+    });
+
+    // Verify all listings are displayed
+    expect(screen.getByText("Cozy Apartment")).toBeInTheDocument();
+    expect(screen.getByText("Beach House")).toBeInTheDocument();
+    expect(screen.getByText("Mountain Cabin")).toBeInTheDocument();
+
+    // Verifying images are rendered
+    const listingImages = screen.getAllByAltText("listing cover");
+    expect(listingImages).toHaveLength(3);
+
+    // Verifying Edit and Delete buttons for each listing
+    const editButtons = screen.getAllByText("Edit");
+    const deleteButtons = screen.getAllByText("Delete");
+    expect(editButtons).toHaveLength(3);
+    expect(deleteButtons).toHaveLength(3);
+  });
 });
