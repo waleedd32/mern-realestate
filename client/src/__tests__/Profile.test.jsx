@@ -157,4 +157,32 @@ describe("Profile Component", () => {
       );
     });
   });
+
+  it("handles user sign out", async () => {
+    // Mocking a successful sign-out response
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: true,
+        message: "Signed out",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking sign out
+    const signOutLink = screen.getByText("Sign out");
+    fireEvent.click(signOutLink);
+
+    // Checking axios call
+    await waitFor(() => {
+      expect(axios.get).toHaveBeenCalledWith("/server/auth/signout");
+    });
+  });
 });
