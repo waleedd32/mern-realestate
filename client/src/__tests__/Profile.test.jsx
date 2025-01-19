@@ -255,4 +255,26 @@ describe("Profile Component", () => {
     expect(editButtons).toHaveLength(3);
     expect(deleteButtons).toHaveLength(3);
   });
+
+  it("handles error when fetching listings fails", async () => {
+    // Mocking a failed listings response
+    axios.get.mockRejectedValueOnce(new Error("Failed to fetch listings"));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const showListingsButton = screen.getByText("Show Listings");
+    fireEvent.click(showListingsButton);
+
+    // Waiting for error message
+    await waitFor(() => {
+      expect(screen.getByText("Error showing listings")).toBeInTheDocument();
+    });
+  });
 });
