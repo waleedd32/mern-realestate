@@ -277,4 +277,49 @@ describe("Profile Component", () => {
       expect(screen.getByText("Error showing listings")).toBeInTheDocument();
     });
   });
+
+  it("handles successful listing deletion", async () => {
+    const mockListing = {
+      _id: "listing1",
+      name: "Cozy Apartment",
+      imageUrls: ["apartment-image.jpg"],
+    };
+
+    // Mocking API calls
+    axios.get.mockResolvedValueOnce({ data: [mockListing] });
+    axios.delete.mockResolvedValueOnce({ data: { success: true } });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Show listings
+    const showListingsButton = screen.getByText("Show Listings");
+    fireEvent.click(showListingsButton);
+
+    // Waiting for listing to appear and verify presence
+    const listingName = await screen.findByText("Cozy Apartment");
+    expect(listingName).toBeInTheDocument();
+
+    // Deleting listing
+    const deleteButton = screen.getByText("Delete");
+    fireEvent.click(deleteButton);
+
+    // Verifying API call
+    await waitFor(() => {
+      expect(axios.delete).toHaveBeenCalledWith(
+        "/server/listing/delete/listing1"
+      );
+    });
+
+    // Verifying listing is removed from UI
+    await waitFor(() => {
+      expect(screen.queryByText("Cozy Apartment")).not.toBeInTheDocument();
+    });
+  });
 });
