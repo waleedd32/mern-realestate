@@ -38,7 +38,17 @@ vi.mock("firebase/storage", () => ({
   ref: vi.fn(),
   uploadBytesResumable: vi.fn(() => ({
     on: vi.fn((event, progressCallback, errorCallback, completeCallback) => {
+      // Simulating initial progress
       progressCallback({ bytesTransferred: 50, totalBytes: 100 });
+      // Simulating finishing
+      // setTimeout here is only for testing 'Uploading 50%',
+      // if dont want to test 'Uploading 50%' then remove setTimeout and 'Uploading 50%' but keep progressCallback and completeCallback
+      setTimeout(() => {
+        progressCallback({ bytesTransferred: 100, totalBytes: 100 });
+        completeCallback();
+      }, 50);
+
+      // Then call completion
       completeCallback();
     }),
     snapshot: { ref: "mockRef" },
@@ -354,6 +364,11 @@ describe("Profile Component", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Uploading 50%")).toBeInTheDocument();
+    });
+    await waitFor(() => {
+      expect(
+        screen.getByText("Image successfully uploaded!")
+      ).toBeInTheDocument();
     });
   });
 });
