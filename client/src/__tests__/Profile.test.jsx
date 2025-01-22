@@ -32,6 +32,20 @@ const createMockStore = (initialState = {}) => {
   });
 };
 
+// Mock Firebase storage
+vi.mock("firebase/storage", () => ({
+  getStorage: vi.fn(),
+  ref: vi.fn(),
+  uploadBytesResumable: vi.fn(() => ({
+    on: vi.fn((event, progressCallback, errorCallback, completeCallback) => {
+      progressCallback({ bytesTransferred: 50, totalBytes: 100 });
+      completeCallback();
+    }),
+    snapshot: { ref: "mockRef" },
+  })),
+  getDownloadURL: vi.fn().mockResolvedValue("test-url.jpg"),
+}));
+
 describe("Profile Component", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -320,6 +334,26 @@ describe("Profile Component", () => {
     // Verifying listing is removed from UI
     await waitFor(() => {
       expect(screen.queryByText("Cozy Apartment")).not.toBeInTheDocument();
+    });
+  });
+
+  it("handles file upload correctly", async () => {
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    const fileInput = screen.getByTestId("file-input");
+    const file = new File(["test"], "test.png", { type: "image/png" });
+
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    await waitFor(() => {
+      expect(screen.getByText("Uploading 50%")).toBeInTheDocument();
     });
   });
 });

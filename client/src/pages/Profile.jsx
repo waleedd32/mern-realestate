@@ -192,6 +192,7 @@ function Profile() {
           ref={fileRef}
           hidden
           accept="image/*"
+          data-testid="file-input"
         />{" "}
         <img
           onClick={() => fileRef.current.click()}

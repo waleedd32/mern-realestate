@@ -250,12 +250,18 @@ describe("Listing Component", () => {
       </Provider>
     );
 
+    // Waiting for the listing to be rendered
     await waitFor(() => {
-      const contactButton = screen.getByText("Contact landlord");
-      fireEvent.click(contactButton);
+      expect(screen.getByText("Contact landlord")).toBeInTheDocument();
     });
 
-    expect(screen.getByTestId("contact-form")).toBeInTheDocument();
+    // Clicking the "Contact landlord" button
+    fireEvent.click(screen.getByText("Contact landlord"));
+
+    // Now waiting for the contact form to appear
+    await waitFor(() => {
+      expect(screen.getByTestId("contact-form")).toBeInTheDocument();
+    });
   });
 
   it("shows discount information when offer exists", async () => {
