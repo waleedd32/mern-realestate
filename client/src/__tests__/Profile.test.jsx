@@ -371,4 +371,39 @@ describe("Profile Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("shows an error message when file upload fails", async () => {
+    //  For this test only, override the default mock with an error scenario.
+    const { uploadBytesResumable } = await import("firebase/storage");
+    uploadBytesResumable.mockImplementationOnce(() => ({
+      on: vi.fn((event, progressCallback, errorCallback) => {
+        errorCallback(new Error("Simulated upload error"));
+      }),
+      snapshot: { ref: "mockRef" },
+    }));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Triggering file selection
+    const fileInput = screen.getByTestId("file-input");
+    fireEvent.change(fileInput, {
+      target: {
+        files: [new File(["test"], "test.png", { type: "image/png" })],
+      },
+    });
+
+    // After the error callback is triggered, the component should show the error text
+    await waitFor(() => {
+      expect(
+        screen.getByText("Error Image upload (image must be less than 2 mb)")
+      ).toBeInTheDocument();
+    });
+  });
 });
