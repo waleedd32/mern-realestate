@@ -182,6 +182,32 @@ describe("Profile Component", () => {
     });
   });
 
+  it("shows error if deleteUser returns success: false", async () => {
+    // Making the delete request respond with success: false
+    axios.delete.mockResolvedValueOnce({
+      data: {
+        success: false,
+        message: "Could not delete user.",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking "Delete account"
+    fireEvent.click(screen.getByText("Delete account"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Could not delete user.")).toBeInTheDocument();
+    });
+  });
+
   it("handles user sign out", async () => {
     // Mocking a successful sign-out response
     axios.get.mockResolvedValueOnce({
