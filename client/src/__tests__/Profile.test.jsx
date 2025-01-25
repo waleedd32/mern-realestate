@@ -432,4 +432,30 @@ describe("Profile Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("shows error if signOut returns success: false", async () => {
+    // Making signout request respond with success: false
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: false,
+        message: "Could not sign out user.",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking "Sign out"
+    fireEvent.click(screen.getByText("Sign out"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Could not sign out user.")).toBeInTheDocument();
+    });
+  });
 });
