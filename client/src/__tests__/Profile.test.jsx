@@ -458,4 +458,34 @@ describe("Profile Component", () => {
       expect(screen.getByText("Could not sign out user.")).toBeInTheDocument();
     });
   });
+
+  it("shows an error if user update returns success: false", async () => {
+    // Mocking the API to return a successful HTTP status but success: false in JSON
+    axios.post.mockResolvedValueOnce({
+      data: {
+        success: false,
+        message: "Server says update not possible",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking the Update button to fire the submit
+    const updateButton = screen.getByRole("button", { name: /update/i });
+    fireEvent.click(updateButton);
+
+    // Waiting for the error message to be displayed
+    await waitFor(() => {
+      expect(
+        screen.getByText("Server says update not possible")
+      ).toBeInTheDocument();
+    });
+  });
 });
