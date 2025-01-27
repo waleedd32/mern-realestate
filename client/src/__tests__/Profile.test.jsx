@@ -208,6 +208,42 @@ describe("Profile Component", () => {
     });
   });
 
+  it("shows an error message if user deletion fails (catch block)", async () => {
+    // Mocking a failed delete response in the catch block
+    axios.delete.mockRejectedValueOnce({
+      response: {
+        data: {
+          message: "Server error during deletion",
+        },
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking "Delete account"
+    const deleteLink = screen.getByText("Delete account");
+    fireEvent.click(deleteLink);
+
+    // Waiting for the error message to appear in the UI
+    await waitFor(() => {
+      expect(
+        screen.getByText("Server error during deletion")
+      ).toBeInTheDocument();
+    });
+
+    // (Optional) Verify axios was called with the correct endpoint
+    expect(axios.delete).toHaveBeenCalledWith(
+      "/server/user/delete/test-user-id"
+    );
+  });
+
   it("handles user sign out", async () => {
     // Mocking a successful sign-out response
     axios.get.mockResolvedValueOnce({
