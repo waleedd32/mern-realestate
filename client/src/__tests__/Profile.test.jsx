@@ -546,4 +546,28 @@ describe("Profile Component", () => {
       expect(screen.getByText("Sign out request failed")).toBeInTheDocument();
     });
   });
+
+  it("shows fallback error message if error object doesn't have error.message", async () => {
+    // Mocking a failed sign-out request without a .message property
+    axios.get.mockRejectedValueOnce({});
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Triggering sign out
+    fireEvent.click(screen.getByText("Sign out"));
+
+    // Waiting for the fallback error message
+    await waitFor(() => {
+      expect(
+        screen.getByText("An error occurred during sign out")
+      ).toBeInTheDocument();
+    });
+  });
 });
