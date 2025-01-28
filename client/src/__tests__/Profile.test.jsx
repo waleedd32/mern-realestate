@@ -524,4 +524,26 @@ describe("Profile Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("shows the exact error.message if sign out fails (catch block)", async () => {
+    // Mocking a failed sign-out request with a custom error message
+    axios.get.mockRejectedValueOnce(new Error("Sign out request failed"));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking the "Sign out" link, triggering handleSignOut
+    fireEvent.click(screen.getByText("Sign out"));
+
+    // Waiting for the error message to appear
+    await waitFor(() => {
+      expect(screen.getByText("Sign out request failed")).toBeInTheDocument();
+    });
+  });
 });
