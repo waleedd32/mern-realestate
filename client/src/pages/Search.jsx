@@ -146,6 +146,7 @@ const Search = () => {
               className="border rounded-lg p-3 w-full"
               value={sidebardata.searchTerm}
               onChange={handleChange}
+              data-testid="search-term-input"
             />
           </div>
 
@@ -158,6 +159,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.type === "all"}
+                data-testid="all-type"
               />
               <span>Rent & Sale</span>
             </div>
@@ -168,6 +170,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.type === "rent"}
+                data-testid="rent-type"
               />
               <span>Rent</span>
             </div>
@@ -178,6 +181,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.type === "sale"}
+                data-testid="sale-type"
               />
               <span>Sale</span>
             </div>
@@ -188,6 +192,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.offer}
+                data-testid="offer-type"
               />
               <span>Offer</span>
             </div>
@@ -201,6 +206,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.parking}
+                data-testid="parking"
               />
               <span>Parking</span>
             </div>
@@ -211,6 +217,7 @@ const Search = () => {
                 className="w-5"
                 onChange={handleChange}
                 checked={sidebardata.furnished}
+                data-testid="furnished"
               />
               <span>Furnished</span>
             </div>
@@ -222,6 +229,7 @@ const Search = () => {
               defaultValue={"created_at_desc"}
               id="sort_order"
               className="border rounded-lg p-3"
+              data-testid="sort-order"
             >
               <option value="regularPrice_desc">Price high to low</option>
               <option value="regularPrice_asc">Price low to hight</option>
@@ -230,7 +238,10 @@ const Search = () => {
             </select>
           </div>
 
-          <button className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95">
+          <button
+            className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95"
+            data-testid="search-button"
+          >
             Search
           </button>
         </form>
