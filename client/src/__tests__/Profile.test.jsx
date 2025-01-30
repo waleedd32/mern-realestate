@@ -570,4 +570,33 @@ describe("Profile Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("shows an error if listings response returns success: false", async () => {
+    // Mocking the server response so that it does not throw an error,
+    // but returns success: false in the JSON
+    axios.get.mockResolvedValueOnce({
+      data: {
+        success: false,
+        message: "Unable to retrieve listings.",
+      },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <Profile />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Clicking the "Show Listings" button to trigger handleShowListings
+    fireEvent.click(screen.getByText("Show Listings"));
+
+    // The component should set showListingsError to true
+    // and display the error message (Error showing listings)
+    await waitFor(() => {
+      expect(screen.getByText("Error showing listings")).toBeInTheDocument();
+    });
+  });
 });
