@@ -52,4 +52,39 @@ describe("Search Component", () => {
       expect(screen.getByText("No listing found!")).toBeInTheDocument();
     });
   });
+
+  it("displays listings when the API returns data", async () => {
+    // Mocking some listings data
+    axios.get.mockResolvedValueOnce({
+      data: [
+        {
+          _id: "1",
+          name: "Cozy Apartment",
+          imageUrls: ["apartment.jpg"],
+          regularPrice: 800,
+          offer: false,
+          type: "rent",
+        },
+        {
+          _id: "2",
+          name: "Beach House",
+          imageUrls: ["beach.jpg"],
+          regularPrice: 300000,
+          offer: false,
+          type: "sale",
+        },
+      ],
+    });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Cozy Apartment")).toBeInTheDocument();
+      expect(screen.getByText("Beach House")).toBeInTheDocument();
+    });
+  });
 });
