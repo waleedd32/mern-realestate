@@ -36,4 +36,20 @@ describe("Search Component", () => {
       expect(screen.getByTestId("search-button")).toBeInTheDocument();
     });
   });
+
+  it("displays 'No listing found!' if the response data array is empty", async () => {
+    // Mocking an empty array of listings
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Waiting for fetch to complete, then check for "No listing found!"
+    await waitFor(() => {
+      expect(screen.getByText("No listing found!")).toBeInTheDocument();
+    });
+  });
 });
