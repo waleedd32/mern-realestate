@@ -87,4 +87,33 @@ describe("Search Component", () => {
       expect(screen.getByText("Beach House")).toBeInTheDocument();
     });
   });
+
+  it("should update the 'type' when a type checkbox is changed", async () => {
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Initially, the type is "all" so the "all-type" checkbox is checked.
+    const allType = screen.getByTestId("all-type");
+    const rentType = screen.getByTestId("rent-type");
+    const saleType = screen.getByTestId("sale-type");
+
+    expect(allType.checked).toBe(true);
+    expect(rentType.checked).toBe(false);
+    expect(saleType.checked).toBe(false);
+
+    // Simulating clicking on the "rent" checkbox.
+    fireEvent.click(rentType);
+
+    // Waiting for the state update.
+    await waitFor(() => {
+      expect(rentType.checked).toBe(true);
+      expect(allType.checked).toBe(false);
+      expect(saleType.checked).toBe(false);
+    });
+  });
 });
