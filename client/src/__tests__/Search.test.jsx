@@ -116,4 +116,21 @@ describe("Search Component", () => {
       expect(saleType.checked).toBe(false);
     });
   });
+
+  it("updates searchTerm when input changes", async () => {
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const searchInput = screen.getByTestId("search-term-input");
+      fireEvent.change(searchInput, { target: { value: "apartment" } });
+
+      expect(searchInput.value).toBe("apartment");
+    });
+  });
 });
