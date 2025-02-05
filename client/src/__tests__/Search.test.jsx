@@ -166,4 +166,21 @@ describe("Search Component", () => {
       expect(offerCheckbox.checked).toBe(true);
     });
   });
+
+  it("updates sort and order when sort select changes", async () => {
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    await waitFor(() => {
+      const sortSelect = screen.getByTestId("sort-order");
+      fireEvent.change(sortSelect, { target: { value: "regularPrice_asc" } });
+
+      expect(sortSelect.value).toBe("regularPrice_asc");
+    });
+  });
 });
