@@ -133,4 +133,37 @@ describe("Search Component", () => {
       expect(searchInput.value).toBe("apartment");
     });
   });
+
+  it("updates boolean checkboxes (parking, furnished, offer) when changed", async () => {
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    const parkingCheckbox = screen.getByTestId("parking");
+    const furnishedCheckbox = screen.getByTestId("furnished");
+    const offerCheckbox = screen.getByTestId("offer-type");
+
+    // Checking initial values and then click to update them.
+    expect(parkingCheckbox.checked).toBe(false);
+    fireEvent.click(parkingCheckbox);
+    await waitFor(() => {
+      expect(parkingCheckbox.checked).toBe(true);
+    });
+
+    expect(furnishedCheckbox.checked).toBe(false);
+    fireEvent.click(furnishedCheckbox);
+    await waitFor(() => {
+      expect(furnishedCheckbox.checked).toBe(true);
+    });
+
+    expect(offerCheckbox.checked).toBe(false);
+    fireEvent.click(offerCheckbox);
+    await waitFor(() => {
+      expect(offerCheckbox.checked).toBe(true);
+    });
+  });
 });
