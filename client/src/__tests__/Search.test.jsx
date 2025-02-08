@@ -183,4 +183,206 @@ describe("Search Component", () => {
       expect(sortSelect.value).toBe("regularPrice_asc");
     });
   });
+  it("Fetches and displays additional listings on 'Show more' click", async () => {
+    // following is simpler way of doing it using map function change getByText to (/1 Listing/)
+    // const initialListings = Array(9)
+    // .fill(null)
+    // .map((_, index) => ({
+    //   _id: `${index + 1}`,
+    //   name: `${index + 1} Listing `,
+    //   description: "A nice place",
+    //   address: `${index + 1}23 Test St`,
+    //   regularPrice: 1000,
+    //   discountPrice: 900,
+    //   type: "rent",
+    //   offer: true,
+    //   imageUrls: ["test1.jpg"],
+    //   furnished: true,
+    //   parking: true,
+    //   bedrooms: 2,
+    //   bathrooms: 1,
+    // }));
+
+    // Creating 9 initial listings
+    const initialListings = [
+      {
+        _id: "1",
+        name: "First Listing",
+        description: "A nice place",
+        address: "123 Test St",
+        regularPrice: 1000,
+        discountPrice: 900,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test1.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "2",
+        name: "Second Listing",
+        description: "Another nice place",
+        address: "456 Test Ave",
+        regularPrice: 2000,
+        discountPrice: 1800,
+        type: "sale",
+        offer: true,
+        imageUrls: ["test2.jpg"],
+        furnished: false,
+        parking: true,
+        bedrooms: 3,
+        bathrooms: 2,
+      },
+      // Adding 7 more of the same type  to go over 8
+      {
+        _id: "3",
+        name: "Third Listing",
+        description: "Nice place",
+        address: "789 Test St",
+        regularPrice: 1200,
+        discountPrice: 1100,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test3.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "4",
+        name: "Fourth Listing",
+        description: "Nice place",
+        address: "101 Test St",
+        regularPrice: 1300,
+        discountPrice: 1200,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test4.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "5",
+        name: "Fifth Listing",
+        description: "Nice place",
+        address: "102 Test St",
+        regularPrice: 1400,
+        discountPrice: 1300,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test5.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "6",
+        name: "Sixth Listing",
+        description: "Nice place",
+        address: "103 Test St",
+        regularPrice: 1500,
+        discountPrice: 1400,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test6.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "7",
+        name: "Seventh Listing",
+        description: "Nice place",
+        address: "104 Test St",
+        regularPrice: 1600,
+        discountPrice: 1500,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test7.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "8",
+        name: "Eighth Listing",
+        description: "Nice place",
+        address: "105 Test St",
+        regularPrice: 1700,
+        discountPrice: 1600,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test8.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+      {
+        _id: "9",
+        name: "Ninth Listing",
+        description: "Nice place",
+        address: "106 Test St",
+        regularPrice: 1800,
+        discountPrice: 1700,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test9.jpg"],
+        furnished: true,
+        parking: true,
+        bedrooms: 2,
+        bathrooms: 1,
+      },
+    ];
+
+    const additionalListings = [
+      {
+        _id: "10",
+        name: "Additional Listing",
+        description: "Yet another nice place",
+        address: "789 Test Blvd",
+        regularPrice: 1500,
+        discountPrice: 1400,
+        type: "rent",
+        offer: true,
+        imageUrls: ["test3.jpg"],
+        furnished: true,
+        parking: false,
+        bedrooms: 1,
+        bathrooms: 1,
+      },
+    ];
+
+    // First call returns initial listings (>8 items)
+    axios.get.mockResolvedValueOnce({ data: initialListings });
+    // Second call returns additional listings
+    axios.get.mockResolvedValueOnce({ data: additionalListings });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Waiting for initial listings to load
+    await waitFor(() => {
+      expect(screen.getByText(/First Listing/i)).toBeInTheDocument();
+    });
+
+    // Now the "Show more" button should be visible
+    const showMoreButton = screen.getByText("Show more");
+    fireEvent.click(showMoreButton);
+
+    await waitFor(() => {
+      expect(screen.getByText(/Additional Listing/i)).toBeInTheDocument();
+    });
+  });
 });
