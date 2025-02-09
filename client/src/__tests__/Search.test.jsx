@@ -385,4 +385,42 @@ describe("Search Component", () => {
       expect(screen.getByText(/Additional Listing/i)).toBeInTheDocument();
     });
   });
+
+  it("sets sidebardata based on URL query parameters", async () => {
+    // We are making fake URL query parameters.
+    // In this test, we want to check if URL has values,
+    // then inside state (and also displayed form) must show same.
+    const queryString =
+      "?searchTerm=TestTerm&type=sale&parking=true&furnished=true&offer=true&sort=custom&order=asc";
+    window.history.pushState({}, "Test page", queryString);
+
+    // When component is created, it is calling API to get data, so we make fake API response.
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Waiting until the useEffect has run and the input value is updated.
+    await waitFor(() => {
+      expect(screen.getByTestId("search-term-input").value).toBe("TestTerm");
+    });
+
+    // Checking that the "type" radio/checkbox state is set based on the URL:
+    // since type is "sale", only the sale checkbox should be checked.
+    expect(screen.getByTestId("sale-type").checked).toBe(true);
+    expect(screen.getByTestId("all-type").checked).toBe(false);
+    expect(screen.getByTestId("rent-type").checked).toBe(false);
+
+    // Verifying the boolean checkboxes:
+    const parkingCheckbox = screen.getByTestId("parking");
+    const furnishedCheckbox = screen.getByTestId("furnished");
+    const offerCheckbox = screen.getByTestId("offer-type");
+
+    expect(parkingCheckbox.checked).toBe(true);
+    expect(furnishedCheckbox.checked).toBe(true);
+    expect(offerCheckbox.checked).toBe(true);
+  });
 });
