@@ -6,6 +6,18 @@ import Search from "../pages/Search";
 
 vi.mock("axios");
 
+// To test handleSubmit (and check if navigation URL is correct),
+// we need to override the useNavigate hook.
+const mockedUsedNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  // Import all from react-router-dom normally.
+  const actual = await vi.importActual("react-router-dom");
+  return {
+    ...actual,
+    useNavigate: () => mockedUsedNavigate,
+  };
+});
+// ----------------
 describe("Search Component", () => {
   beforeEach(() => {
     // Clearing all mocks to ensure no calls from previous tests affect the next
@@ -422,5 +434,41 @@ describe("Search Component", () => {
     expect(parkingCheckbox.checked).toBe(true);
     expect(furnishedCheckbox.checked).toBe(true);
     expect(offerCheckbox.checked).toBe(true);
+  });
+
+  it("navigates with the correct URL query string on form submission", async () => {
+    // Set the URL with query parameters so the component’s state is pre‑populated.
+    const queryString =
+      "?searchTerm=TestTerm&type=sale&parking=true&furnished=true&offer=true&sort=custom&order=asc";
+    window.history.pushState({}, "Test page", queryString);
+
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Wait for the form to show the initial search term from the URL.
+    await waitFor(() => {
+      expect(screen.getByTestId("search-term-input").value).toBe("TestTerm");
+    });
+
+    // Simulate clicking "Search" button to send form.
+    const searchButton = screen.getByTestId("search-button");
+    fireEvent.click(searchButton);
+
+    // handleSubmit function must make query string from sidebar data.
+    // Component puts query parameters in this order:
+    // searchTerm, type, parking, furnished, offer, sort, order.
+    // With our URL values, we expect this query string.
+    const expectedQuery =
+      "searchTerm=TestTerm&type=sale&parking=true&furnished=true&offer=true&sort=custom&order=asc";
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(
+        `/search?${expectedQuery}`
+      );
+    });
   });
 });
