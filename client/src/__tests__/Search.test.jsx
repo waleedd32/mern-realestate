@@ -471,4 +471,33 @@ describe("Search Component", () => {
       );
     });
   });
+
+  it("should handle form submission with default values", async () => {
+    // Reset URL to clean state before test
+    window.history.pushState({}, "Test page", "/search");
+
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Submit form without changing any values
+    fireEvent.submit(screen.getByTestId("search-button"));
+
+    // Verify navigation with default values
+    await waitFor(() => {
+      expect(mockedUsedNavigate).toHaveBeenCalledWith(
+        expect.stringContaining("/search?")
+      );
+      const navigateArg = mockedUsedNavigate.mock.calls[0][0];
+      expect(navigateArg).toContain("searchTerm=");
+      expect(navigateArg).toContain("type=all");
+      expect(navigateArg).toContain("parking=false");
+      expect(navigateArg).toContain("furnished=false");
+      expect(navigateArg).toContain("offer=false");
+    });
+  });
 });
