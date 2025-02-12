@@ -500,4 +500,77 @@ describe("Search Component", () => {
       expect(navigateArg).toContain("offer=false");
     });
   });
+
+  it("should handle checkbox changes for parking, furnished, and offer", async () => {
+    // Mocking the initial API call that happens on component mount
+    axios.get.mockResolvedValueOnce({ data: [] });
+
+    render(
+      <BrowserRouter>
+        <Search />
+      </BrowserRouter>
+    );
+
+    // Getting all boolean checkboxes
+    const parkingCheckbox = screen.getByTestId("parking");
+    const furnishedCheckbox = screen.getByTestId("furnished");
+    const offerCheckbox = screen.getByTestId("offer-type");
+
+    // Testing initial state - all should be unchecked by default
+    expect(parkingCheckbox.checked).toBe(false);
+    expect(furnishedCheckbox.checked).toBe(false);
+    expect(offerCheckbox.checked).toBe(false);
+
+    // Testing parking checkbox
+    fireEvent.click(parkingCheckbox);
+    await waitFor(() => {
+      expect(parkingCheckbox.checked).toBe(true);
+      // Verifying other checkboxes remain unchanged
+      expect(furnishedCheckbox.checked).toBe(false);
+      expect(offerCheckbox.checked).toBe(false);
+    });
+
+    // Test furnished checkbox
+    fireEvent.click(furnishedCheckbox);
+    await waitFor(() => {
+      expect(furnishedCheckbox.checked).toBe(true);
+      // Verifying other checkboxes remain in their states
+      expect(parkingCheckbox.checked).toBe(true);
+      expect(offerCheckbox.checked).toBe(false);
+    });
+
+    // Test offer checkbox
+    fireEvent.click(offerCheckbox);
+    await waitFor(() => {
+      expect(offerCheckbox.checked).toBe(true);
+      // Verifying other checkboxes remain in their states
+      expect(parkingCheckbox.checked).toBe(true);
+      expect(furnishedCheckbox.checked).toBe(true);
+    });
+
+    // Test toggling off each checkbox
+    fireEvent.click(parkingCheckbox);
+    await waitFor(() => {
+      expect(parkingCheckbox.checked).toBe(false);
+      // Verifying other checkboxes remain unchanged
+      expect(furnishedCheckbox.checked).toBe(true);
+      expect(offerCheckbox.checked).toBe(true);
+    });
+
+    fireEvent.click(furnishedCheckbox);
+    await waitFor(() => {
+      expect(furnishedCheckbox.checked).toBe(false);
+      // Verifying other checkboxes remain in their states
+      expect(parkingCheckbox.checked).toBe(false);
+      expect(offerCheckbox.checked).toBe(true);
+    });
+
+    fireEvent.click(offerCheckbox);
+    await waitFor(() => {
+      expect(offerCheckbox.checked).toBe(false);
+      // Verifying all checkboxes are now unchecked
+      expect(parkingCheckbox.checked).toBe(false);
+      expect(furnishedCheckbox.checked).toBe(false);
+    });
+  });
 });
