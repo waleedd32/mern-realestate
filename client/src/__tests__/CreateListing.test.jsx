@@ -136,6 +136,12 @@ describe("CreateListing Component", () => {
     const uploadButton = screen.getByRole("button", { name: /upload/i });
     await userEvent.click(uploadButton);
 
+    // Wait for the uploaded image to appear in the DOM.
+    // This ensures that the image URL is added to the component's state.
+    await waitFor(() => {
+      expect(screen.getByAltText("listing image")).toBeInTheDocument();
+    });
+
     // Submit the form
     const createListingButton = screen.getByRole("button", {
       name: /create listing/i,
