@@ -356,6 +356,7 @@ function UpdateListing() {
               type="file"
               id="images"
               accept="image/*"
+              data-testid="file-input"
               multiple
             />
             <button
