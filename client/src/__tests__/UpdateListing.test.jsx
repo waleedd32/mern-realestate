@@ -131,4 +131,60 @@ describe("UpdateListing Component", () => {
       expect(images[0]).toHaveAttribute("src", "new-image-url.jpg");
     });
   });
+
+  //
+
+  // Test case 2: Listing already has images, so the new image should be appended.
+  it("appends uploaded image to the existing imageUrls", async () => {
+    // Use the mock listing with preexisting images.
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    // Override Firebase storage mocks to simulate successful upload.
+    const { uploadBytesResumable, getDownloadURL } = await import(
+      "firebase/storage"
+    );
+    uploadBytesResumable.mockImplementation(() => ({
+      on: (event, progressCallback, errorCallback, completeCallback) => {
+        progressCallback({ bytesTransferred: 100, totalBytes: 100 });
+        completeCallback();
+      },
+      snapshot: { ref: {} },
+    }));
+    getDownloadURL.mockResolvedValue("new-image-url.jpg");
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Waiting for the initial listing data to load.
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // Verifying that two images are already rendered.
+    let images = screen.getAllByAltText("listing image");
+    expect(images).toHaveLength(2);
+    expect(images[0]).toHaveAttribute("src", "image1.jpg");
+    expect(images[1]).toHaveAttribute("src", "image2.jpg");
+
+    // Simulating file selection and upload.
+    const fileInput = screen.getByTestId("file-input");
+    const file = new File(["dummy content"], "test.png", { type: "image/png" });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    fireEvent.click(uploadButton);
+
+    // Waiting for the new image to be appended.
+    await waitFor(() => {
+      images = screen.getAllByAltText("listing image");
+      expect(images).toHaveLength(3);
+      expect(images[2]).toHaveAttribute("src", "new-image-url.jpg");
+    });
+  });
 });
