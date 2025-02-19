@@ -187,4 +187,24 @@ describe("UpdateListing Component", () => {
       expect(images[2]).toHaveAttribute("src", "new-image-url.jpg");
     });
   });
+
+  it("handles unsuccessful listing fetch (data.success false)", async () => {
+    axios.get.mockResolvedValueOnce({
+      data: { success: false, message: "Listing not found" },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Since the listing fetch fails, form fields should remain at their default values.
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("Name").value).toBe("");
+    });
+  });
 });
