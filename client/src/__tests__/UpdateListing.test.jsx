@@ -207,4 +207,45 @@ describe("UpdateListing Component", () => {
       expect(screen.getByPlaceholderText("Name").value).toBe("");
     });
   });
+
+  it("displays error when image upload fails", async () => {
+    // Use a listing with no images to simplify
+    const emptyListing = { ...mockListing, imageUrls: [] };
+    axios.get.mockResolvedValueOnce({ data: emptyListing });
+
+    const { uploadBytesResumable } = await import("firebase/storage");
+    // Simulating error during upload
+    uploadBytesResumable.mockImplementation(() => ({
+      on: (event, progressCallback, errorCallback, completeCallback) => {
+        errorCallback(new Error("Upload failed"));
+      },
+      snapshot: { ref: {} },
+    }));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    const fileInput = screen.getByTestId("file-input");
+    const file = new File(["dummy"], "fail.png", { type: "image/png" });
+    fireEvent.change(fileInput, { target: { files: [file] } });
+
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Image upload failed (2 mb max per image)")
+      ).toBeInTheDocument();
+    });
+  });
 });
