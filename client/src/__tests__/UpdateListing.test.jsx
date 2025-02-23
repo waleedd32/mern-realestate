@@ -248,4 +248,40 @@ describe("UpdateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+  it("displays error when too many images are uploaded", async () => {
+    // Use listing with 2 images.
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Waiting for the listing data to load so formData.imageUrls equals ["image1.jpg", "image2.jpg"]
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // Now simulate selecting 5 files.
+    const fileInput = screen.getByTestId("file-input");
+    const files = [
+      new File(["test"], "test1.jpg", { type: "image/jpeg" }),
+      new File(["test"], "test2.jpg", { type: "image/jpeg" }),
+      new File(["test"], "test3.jpg", { type: "image/jpeg" }),
+      new File(["test"], "test4.jpg", { type: "image/jpeg" }),
+      new File(["test"], "test5.jpg", { type: "image/jpeg" }),
+    ];
+    fireEvent.change(fileInput, { target: { files } });
+    const uploadButton = screen.getByRole("button", { name: /upload/i });
+    fireEvent.click(uploadButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("You can only upload 6 images per listing")
+      ).toBeInTheDocument();
+    });
+  });
 });
