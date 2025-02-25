@@ -284,4 +284,44 @@ describe("UpdateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("updates state on text and number input changes", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    const nameInput = screen.getByPlaceholderText("Name");
+    fireEvent.change(nameInput, { target: { value: "Luxury Apartment" } });
+    expect(nameInput.value).toBe("Luxury Apartment");
+
+    const descriptionInput = screen.getByPlaceholderText("Description");
+    fireEvent.change(descriptionInput, {
+      target: { value: "Spacious and modern apartment with sea view" },
+    });
+    expect(descriptionInput.value).toBe(
+      "Spacious and modern apartment with sea view"
+    );
+
+    const addressInput = screen.getByPlaceholderText("Address");
+    fireEvent.change(addressInput, {
+      target: { value: "789 Ocean Drive, Miami, FL" },
+    });
+    expect(addressInput.value).toBe("789 Ocean Drive, Miami, FL");
+
+    const bedroomsInput = screen.getByDisplayValue(
+      String(mockListing.bedrooms)
+    );
+    fireEvent.change(bedroomsInput, { target: { value: "4" } });
+    expect(bedroomsInput.value).toBe("4");
+  });
 });
