@@ -324,4 +324,40 @@ describe("UpdateListing Component", () => {
     fireEvent.change(bedroomsInput, { target: { value: "4" } });
     expect(bedroomsInput.value).toBe("4");
   });
+
+  it("updates state on checkbox changes", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    const store = createMockStore();
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // Parking checkbox
+    const parkingCheckbox = screen.getByTestId("parking-checkbox");
+    expect(parkingCheckbox).toBeChecked(); // this is from mockListing (parking: true)
+    fireEvent.click(parkingCheckbox);
+    expect(parkingCheckbox).not.toBeChecked();
+
+    // Furnished checkbox
+    const furnishedCheckbox = screen.getByTestId("furnished-checkbox");
+    expect(furnishedCheckbox).toBeChecked(); // this is from mockListing (furnished: true)
+    fireEvent.click(furnishedCheckbox);
+    expect(furnishedCheckbox).not.toBeChecked();
+
+    // Offer checkbox
+    const offerCheckbox = screen.getByTestId("offer-checkbox");
+    expect(offerCheckbox).toBeChecked(); // this is from mockListing (offer: true)
+    fireEvent.click(offerCheckbox);
+    expect(offerCheckbox).not.toBeChecked();
+  });
 });

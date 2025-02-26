@@ -247,6 +247,7 @@ function UpdateListing() {
               <input
                 type="checkbox"
                 id="parking"
+                data-testid="parking-checkbox"
                 className="w-5"
                 onChange={handleChange}
                 checked={formData.parking}
@@ -257,6 +258,7 @@ function UpdateListing() {
               <input
                 type="checkbox"
                 id="furnished"
+                data-testid="furnished-checkbox"
                 className="w-5"
                 onChange={handleChange}
                 checked={formData.furnished}
@@ -267,6 +269,7 @@ function UpdateListing() {
               <input
                 type="checkbox"
                 id="offer"
+                data-testid="offer-checkbox"
                 className="w-5"
                 onChange={handleChange}
                 checked={formData.offer}
