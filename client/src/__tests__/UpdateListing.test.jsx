@@ -360,4 +360,38 @@ describe("UpdateListing Component", () => {
     fireEvent.click(offerCheckbox);
     expect(offerCheckbox).not.toBeChecked();
   });
+
+  it("updates property type on sale and rent checkbox toggle", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+    const store = createMockStore();
+
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // We get the sale and rent checkboxes by testId
+    const saleCheckbox = screen.getByTestId("sale-checkbox");
+    const rentCheckbox = screen.getByTestId("rent-checkbox");
+
+    // Because listing type is "rent", so rent is checked, sale is not (from mockListing.type = "rent")
+    expect(rentCheckbox).toBeChecked();
+    expect(saleCheckbox).not.toBeChecked();
+    // we can also do like this:   expect(rentCheckbox.checked).toBe(true);
+
+    // We click the sale to switch
+    fireEvent.click(saleCheckbox);
+
+    await waitFor(() => {
+      expect(saleCheckbox).toBeChecked();
+      expect(rentCheckbox).not.toBeChecked();
+    });
+  });
 });

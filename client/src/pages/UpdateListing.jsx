@@ -227,6 +227,7 @@ function UpdateListing() {
               <input
                 type="checkbox"
                 id="sale"
+                data-testid="sale-checkbox"
                 className="w-5"
                 onChange={handleChange}
                 checked={formData.type === "sale"}
@@ -237,6 +238,7 @@ function UpdateListing() {
               <input
                 type="checkbox"
                 id="rent"
+                data-testid="rent-checkbox"
                 className="w-5"
                 onChange={handleChange}
                 checked={formData.type === "rent"}
