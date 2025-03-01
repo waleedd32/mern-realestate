@@ -394,4 +394,37 @@ describe("UpdateListing Component", () => {
       expect(rentCheckbox).not.toBeChecked();
     });
   });
+
+  it("displays error when regular price is less than discount price", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("2000")).toBeInTheDocument();
+    });
+
+    const regularPriceInput = screen.getByDisplayValue("2000");
+    const discountPriceInput = screen.getByDisplayValue("1800");
+
+    fireEvent.change(regularPriceInput, { target: { value: "1000" } });
+    fireEvent.change(discountPriceInput, { target: { value: "1500" } });
+
+    const updateButton = screen.getByRole("button", {
+      name: /update listing/i,
+    });
+    fireEvent.click(updateButton);
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Discount price must be lower than regular price")
+      ).toBeInTheDocument();
+    });
+  });
 });
