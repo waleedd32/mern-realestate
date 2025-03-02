@@ -427,4 +427,31 @@ describe("UpdateListing Component", () => {
       ).toBeInTheDocument();
     });
   });
+
+  it("displays error message when form submission (axios.post) fails", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+    axios.post.mockRejectedValueOnce(new Error("Submission failed"));
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    const updateButton = screen.getByRole("button", {
+      name: /update listing/i,
+    });
+    fireEvent.click(updateButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Submission failed")).toBeInTheDocument();
+    });
+  });
 });
