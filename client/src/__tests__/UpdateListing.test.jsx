@@ -454,4 +454,42 @@ describe("UpdateListing Component", () => {
       expect(screen.getByText("Submission failed")).toBeInTheDocument();
     });
   });
+
+  it("displays error message when form submission returns success: false", async () => {
+    // Mocking the GET request to load the initial listing data.
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    // Mocking the POST request to return success: false with an error message
+    axios.post.mockResolvedValueOnce({
+      data: { success: false, message: "Failed to update listing" },
+    });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Waiting for the initial listing data to load
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // Simulating form submission
+    const updateButton = screen.getByRole("button", {
+      name: /update listing/i,
+    });
+    fireEvent.click(updateButton);
+
+    // Waiting for the error message to appear
+    await waitFor(() => {
+      expect(screen.getByText("Failed to update listing")).toBeInTheDocument();
+    });
+
+    // Verifying that loading state is false after error
+    expect(updateButton).not.toHaveTextContent("Updating...");
+  });
 });
