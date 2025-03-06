@@ -492,4 +492,39 @@ describe("UpdateListing Component", () => {
     // Verifying that loading state is false after error
     expect(updateButton).not.toHaveTextContent("Updating...");
   });
+
+  it("removes an image when the delete button is clicked", async () => {
+    axios.get.mockResolvedValueOnce({ data: mockListing });
+
+    const store = createMockStore();
+    render(
+      <Provider store={store}>
+        <BrowserRouter>
+          <UpdateListing />
+        </BrowserRouter>
+      </Provider>
+    );
+
+    // Waiting for the initial listing data to load
+    await waitFor(() => {
+      expect(screen.getByDisplayValue("Test Property")).toBeInTheDocument();
+    });
+
+    // Verifying that two images are initially rendered
+    let images = screen.getAllByAltText("listing image");
+    expect(images).toHaveLength(2);
+    expect(images[0]).toHaveAttribute("src", "image1.jpg");
+    expect(images[1]).toHaveAttribute("src", "image2.jpg");
+
+    // Finding the delete button for the first image and click it
+    const deleteButtons = screen.getAllByTestId("delete-button");
+    fireEvent.click(deleteButtons[0]);
+
+    // Verifying that the first image has been removed and only the second image remains
+    await waitFor(() => {
+      const remainingImages = screen.getAllByAltText("listing image");
+      expect(remainingImages).toHaveLength(1);
+      expect(remainingImages[0]).toHaveAttribute("src", "image2.jpg");
+    });
+  });
 });
