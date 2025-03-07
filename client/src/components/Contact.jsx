@@ -29,12 +29,13 @@ function Contact({ listing }) {
       {" "}
       {landlord && (
         <div data-testid="contact-form" className="flex flex-col gap-2">
-          <p>
+          <p data-testid="contact-text">
             Contact <span className="font-semibold">{landlord.username}</span>{" "}
             for{" "}
             <span className="font-semibold">{listing.name.toLowerCase()}</span>
           </p>
           <textarea
+            data-testid="message-input"
             name="message"
             id="message"
             rows="2"
@@ -45,6 +46,7 @@ function Contact({ listing }) {
           ></textarea>
 
           <Link
+            data-testid="send-message-link"
             to={`mailto:${landlord.email}?subject=Regarding ${listing.name}&body=${message}`}
             className="bg-slate-700 text-white text-center p-3 uppercase rounded-lg hover:opacity-95"
           >
