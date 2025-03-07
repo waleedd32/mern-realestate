@@ -7,6 +7,8 @@ function Contact({ listing }) {
 
   const [landlord, setLandlord] = useState(null);
   const [message, setMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const onChange = (e) => {
     setMessage(e.target.value);
@@ -18,11 +20,47 @@ function Contact({ listing }) {
 
         setLandlord(response.data);
       } catch (error) {
+        setError(
+          error.response?.data?.message ||
+            error.response?.statusText ||
+            error.message ||
+            "Something went wrong. Please try again later."
+        );
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchLandlord();
   }, [listing.userRef]);
+
+  // Error Alert Component
+  const ErrorAlert = ({ message }) => (
+    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
+      <span className="block sm:inline">{message}</span>
+    </div>
+  );
+
+  if (isLoading) {
+    return <ContactSkeleton />;
+  }
+
+  if (error) {
+    return <ErrorAlert message={error} />;
+  }
+
+  function ContactSkeleton() {
+    return (
+      <div data-testid="contact-skeleton" className="flex flex-col gap-2">
+        <div
+          className="skeleton-row"
+          style={{ height: "24px", width: "80%" }}
+        ></div>
+        <div className="skeleton-row w-full" style={{ height: "80px" }}></div>
+        <div className="skeleton-row w-full" style={{ height: "50px" }}></div>
+      </div>
+    );
+  }
 
   return (
     <>
