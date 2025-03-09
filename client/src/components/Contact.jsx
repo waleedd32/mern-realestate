@@ -36,8 +36,13 @@ function Contact({ listing }) {
 
   // Error Alert Component
   const ErrorAlert = ({ message }) => (
-    <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
-      <span className="block sm:inline">{message}</span>
+    <div
+      data-testid="error-alert"
+      className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+    >
+      <span data-testid="error-alert-message" className="block sm:inline">
+        {message}
+      </span>
     </div>
   );
 

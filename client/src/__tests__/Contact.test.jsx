@@ -35,4 +35,27 @@ describe("Contact Component", () => {
     fireEvent.change(textarea, { target: { value: "Hello Jane!" } });
     expect(textarea.value).toBe("Hello Jane!");
   });
+
+  it("displays an ErrorAlert when there's an error fetching landlord data", async () => {
+    // Mock the GET request to reject with an error
+    axios.get.mockRejectedValueOnce({
+      response: { data: { message: "Failed to fetch landlord" } },
+    });
+
+    render(
+      <BrowserRouter>
+        <Contact listing={{ userRef: "123", name: "Test Listing" }} />
+      </BrowserRouter>
+    );
+
+    // Wait for the error alert to appear in the DOM
+    await waitFor(() => {
+      expect(screen.getByTestId("error-alert")).toBeInTheDocument();
+    });
+
+    // Check the error message text
+    expect(screen.getByTestId("error-alert-message")).toHaveTextContent(
+      "Failed to fetch landlord"
+    );
+  });
 });
