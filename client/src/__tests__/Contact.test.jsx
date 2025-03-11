@@ -37,7 +37,7 @@ describe("Contact Component", () => {
   });
 
   it("displays an ErrorAlert when there's an error fetching landlord data", async () => {
-    // Mock the GET request to reject with an error
+    // Mocking the GET request to reject with an error
     axios.get.mockRejectedValueOnce({
       response: { data: { message: "Failed to fetch landlord" } },
     });
@@ -48,12 +48,12 @@ describe("Contact Component", () => {
       </BrowserRouter>
     );
 
-    // Wait for the error alert to appear in the DOM
+    // Waiting for the error alert to appear in the DOM
     await waitFor(() => {
       expect(screen.getByTestId("error-alert")).toBeInTheDocument();
     });
 
-    // Check the error message text
+    // Checking the error message text
     expect(screen.getByTestId("error-alert-message")).toHaveTextContent(
       "Failed to fetch landlord"
     );

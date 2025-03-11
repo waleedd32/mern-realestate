@@ -28,10 +28,13 @@ function Header() {
   // console.log("urlParams Header", urlParams.get("searchTerm"));
 
   return (
-    <header className="bg-blue-800 text-white shadow-lg">
+    <header className="bg-blue-800 text-white shadow-lg" data-testid="header">
       <div className="flex justify-between items-center max-w-6xl mx-auto p-3">
         <Link to="/">
-          <h1 className="font-bold text-sm sm:text-xl flex flex-wrap">
+          <h1
+            className="font-bold text-sm sm:text-xl flex flex-wrap"
+            data-testid="logo"
+          >
             <span className="text-slate">Walid</span>
             <span className="text-slate-700">Estate</span>
           </h1>
