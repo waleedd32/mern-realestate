@@ -4,9 +4,9 @@ A full-stack real estate application built with React (using Vite) for the clien
 
 ## Table of Contents
 
--Overview
--Features
--Tech Stack
--Installation
--Usage
--Testing & Coverage
+- Overview
+- Features
+- Tech Stack
+- Installation
+- Usage
+- Testing & Coverage
