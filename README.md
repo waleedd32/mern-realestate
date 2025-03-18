@@ -1,5 +1,12 @@
-# Real Estate Application
+# MERN Real Estate Application
 
-## Project Description
+A full-stack real estate application built with React (using Vite) for the client and Node/Express for the server, connected to a MongoDB database. This project demonstrates how to manage property listings, user authentication, and a simple workflow for browsing and searching real estate properties.
 
-This project is a planned full-stack real estate application that will be developed using React for the client-side and Node.js/Express for the server-side. The application will allow users to create, view, update, and delete real estate listings. It will also include authentication and authorization features.
+## Table of Contents
+
+-Overview
+-Features
+-Tech Stack
+-Installation
+-Usage
+-Testing & Coverage
