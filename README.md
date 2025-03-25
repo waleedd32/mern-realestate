@@ -27,3 +27,22 @@ The application allows users to sign up, log in, create or view real estate list
 - Search and Filter: Quickly find properties based on location, price, or property type.
 - Responsive Design: Tailwind CSS makes it simple to create a fully responsive layout.
 - Redux State Management: Centralized, predictable state management in the front end.
+
+## Tech Stack
+
+### Front End (client)
+
+- Framework: React v19 with Vite
+- State Management: Redux Toolkit & React Redux
+- Routing: React Router DOM v6
+- Styling: Tailwind CSS
+- HTTP Client: Axios
+
+### Back End (server)
+
+- Runtime: Node.js
+- Framework: Express.js
+- Database: MongoDB via Mongoose
+- Authentication: bcryptjs for password hashing & jsonwebtoken for JWT-based auth
+- Environment Variables: dotenv
+- Others: cookie-parser, cors, nodemon for development
