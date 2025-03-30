@@ -47,3 +47,26 @@ The application allows users to sign up, log in, create or view real estate list
 - Authentication: bcryptjs for password hashing & jsonwebtoken for JWT-based auth
 - Environment Variables: dotenv
 - Others: cookie-parser, cors, nodemon for development
+
+## Installation (Yarn)
+
+1. Clone the Repository
+
+```bash
+git clone https://github.com/waleedd32/mern-realestate.git
+cd mern-realestate
+```
+
+2. Install Server Dependencies
+
+```bash
+cd server
+yarn
+```
+
+3. Install Client Dependencies
+
+```bash
+cd ../client
+yarn
+```
