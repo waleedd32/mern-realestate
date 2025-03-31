@@ -72,9 +72,16 @@ yarn
 ```
 
 4. Set Up Environment Variables
-   In your server/.env file, add:
+
+In your server/.env file, add:
 
 ```bash
 MONGO="mongodb+srv://USERNAME:PASSWORD@mern-estate.mongodb.net/mern-estate?retryWrites=true&w=majority&appName=mern-estate"
 JWT_SECRET="YOUR_JWT_SECRET"
+```
+
+In your client/.env file, add:
+
+```bash
+VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
 ```
