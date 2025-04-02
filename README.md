@@ -85,3 +85,27 @@ In your client/.env file, add:
 ```bash
 VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
 ```
+
+## Usage
+
+1. Run the Server
+
+Open a terminal in the server folder:
+
+```bash
+yarn run dev
+```
+
+This starts the Express app at http://localhost:3000/
+
+2. Run the Client
+
+In a separate terminal, navigate to the client folder:
+
+```bash
+yarn run dev
+```
+
+By default, Vite will start a local dev server (http://localhost:5173/).
+
+3. Visit the client URL (e.g., http://localhost:5173) in your browser. You can register, log in, and explore real estate listings.
