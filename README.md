@@ -109,3 +109,16 @@ yarn run dev
 By default, Vite will start a local dev server (http://localhost:5173/).
 
 3. Visit the client URL (e.g., http://localhost:5173) in your browser. You can register, log in, and explore real estate listings.
+
+## Testing & Coverage
+
+This project uses Vitest to run tests in the client folder.
+
+- Overall Coverage: ~94.7% of statements
+- Several files (e.g., App.jsx, ListingItem.jsx, Search.jsx) have 100% coverage
+
+To generate and view the coverage report locally:
+
+```bash
+yarn test
+```
