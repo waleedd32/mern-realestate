@@ -11,8 +11,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 function UpdateListing() {
-  axios.defaults.baseURL = import.meta.env.VITE_API_URL;
-  axios.defaults.withCredentials = true;
+  // axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+  // axios.defaults.withCredentials = true;
 
   const { currentUser } = useSelector((state) => state.user);
   const navigate = useNavigate();
