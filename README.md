@@ -11,6 +11,12 @@ A full-stack real estate application built with React (using Vite) for the clien
 - Usage
 - Testing & Coverage
 
+## Live Demo
+
+Made with :heart: by Valid
+
+The project is deployed on Vercel. You can try out the live version: [Live Demo](https://mernrealestate-woad.vercel.app/)
+
 ## Overview
 
 This repository contains two main folders:
