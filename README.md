@@ -90,7 +90,10 @@ In your client/.env file, add:
 
 ```bash
 VITE_FIREBASE_API_KEY="YOUR_FIREBASE_API_KEY"
+VITE_API_URL=http://localhost:3000
 ```
+
+When deploying the application, replace http://localhost:3000 with your deployed server URL.
 
 ## Usage
 
