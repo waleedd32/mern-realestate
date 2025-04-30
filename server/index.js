@@ -53,8 +53,9 @@ app.use((err, req, res, next) => {
   });
 });
 
-app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
+// app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
 
 // app.get("/test", (req, res) => {
 //   res.json({ message: "Real Estate API" });
 // });
+export default app;
