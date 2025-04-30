@@ -53,9 +53,19 @@ app.use((err, req, res, next) => {
   });
 });
 
-// app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`));
-
+/* 
+  Vercel automatically sets process.env.VERCEL to "1" in its serverless environment. 
+  So, app.listen() is only called locally to start the server. 
+  On Vercel, this file is imported as a function and the app is exported instead.
+*/
+if (process.env.VERCEL !== "1") {
+  app.listen(PORT, () =>
+    console.log(`Server is running locally on http://localhost:${PORT}`)
+  );
+}
 // app.get("/test", (req, res) => {
 //   res.json({ message: "Real Estate API" });
 // });
+
+// Exporting the app lets Vercel attach its own listener in the cloud (so export default app; is only for vercel deployment).
 export default app;
