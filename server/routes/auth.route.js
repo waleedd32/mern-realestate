@@ -48,7 +48,8 @@ router.post("/signin", async (req, res, next) => {
         secure: true,
         sameSite: "None",
         path: "/", // Ensuring cookie to be available on all pages
-        // maxAge: 24 * 60 * 60 * 1000, // 1 day
+
+        maxAge: 365 * 24 * 60 * 60 * 1000, // 12 months, Without it the cookie is a “session cookie” and disappears when the user closes the browser.
       })
       .status(200)
       .json(rest);
@@ -70,7 +71,7 @@ router.post("/google", async (req, res, next) => {
           secure: true,
           sameSite: "None",
           path: "/", // Ensure cookie is available on all pages
-          // maxAge: 24 * 60 * 60 * 1000, // 1 day
+          maxAge: 365 * 24 * 60 * 60 * 1000, // 12 months
         })
         .status(200)
         .json({ ...rest, newUser: false });
@@ -96,7 +97,7 @@ router.post("/google", async (req, res, next) => {
           secure: true,
           sameSite: "None",
           path: "/", // Ensure cookie is available on all pages
-          // maxAge: 24 * 60 * 60 * 1000, // 1 day
+          maxAge: 365 * 24 * 60 * 60 * 1000, // 12 months
         })
         .status(200)
         .json({ ...rest, newUser: true });
