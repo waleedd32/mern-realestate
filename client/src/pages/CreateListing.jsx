@@ -173,7 +173,7 @@ function CreateListing() {
           <input
             type="text"
             placeholder="Name"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-white border-gray-200"
             id="name"
             maxLength="62"
             minLength="10"
@@ -184,7 +184,7 @@ function CreateListing() {
           <textarea
             type="text"
             placeholder="Description"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-white border-gray-200"
             id="description"
             required
             onChange={handleChange}
@@ -193,7 +193,7 @@ function CreateListing() {
           <input
             type="text"
             placeholder="Address"
-            className="border p-3 rounded-lg"
+            className="border p-3 rounded-lg bg-white border-gray-200"
             id="address"
             required
             onChange={handleChange}
@@ -262,7 +262,7 @@ function CreateListing() {
                 min="1"
                 max="10"
                 required
-                className="p-3 border border-gray-300 rounded-lg"
+                className="p-3 border rounded-lg bg-white border-gray-200"
                 onChange={handleChange}
                 value={formData.bedrooms}
               />
@@ -275,7 +275,7 @@ function CreateListing() {
                 min="1"
                 max="10"
                 required
-                className="p-3 border border-gray-300 rounded-lg"
+                className="p-3 border rounded-lg bg-white border-gray-200"
                 onChange={handleChange}
                 value={formData.bathrooms}
               />
@@ -288,7 +288,7 @@ function CreateListing() {
                 min="50"
                 max="10000000"
                 required
-                className="p-3 border border-gray-300 rounded-lg"
+                className="p-3 border rounded-lg bg-white border-gray-200"
                 data-testid="regular-price"
                 onChange={handleChange}
                 value={formData.regularPrice}

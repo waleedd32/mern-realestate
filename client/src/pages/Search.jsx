@@ -143,7 +143,7 @@ const Search = () => {
               type="text"
               id="searchTerm"
               placeholder="Search..."
-              className="border rounded-lg p-3 w-full"
+              className="border bg-white rounded-lg p-3 w-full"
               value={sidebardata.searchTerm}
               onChange={handleChange}
               data-testid="search-term-input"
@@ -228,7 +228,7 @@ const Search = () => {
               onChange={handleChange}
               defaultValue={"created_at_desc"}
               id="sort_order"
-              className="border rounded-lg p-3"
+              className="border rounded-lg p-3 bg-white"
               data-testid="sort-order"
             >
               <option value="regularPrice_desc">Price high to low</option>

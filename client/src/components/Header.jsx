@@ -46,7 +46,7 @@ function Header() {
           <input
             type="text"
             placeholder="Search..."
-            className="bg-transparent focus:outline-none text-white placeholder-white p-2 w-24 sm:w-64 md:w-96 "
+            className="bg-transparent focus:outline-none text-black placeholder-black p-2 w-24 sm:w-64 md:w-96 "
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
